@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>VPet.Plugin.SmartLolis</RootNamespace>
+    <AssemblyName>VPet.Plugin.SmartLolis</AssemblyName>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>latest</LangVersion>
+    <Platforms>x64</Platforms>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <GenerateTargetPlatformAttribute>false</GenerateTargetPlatformAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="VPet-Simulator.Windows.Interface" Version="1.1.0.*" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="NAudio">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\VPet\NAudio.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="NAudio.Core">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\VPet\NAudio.Core.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="NAudio.WinMM">
+      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\VPet\NAudio.WinMM.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
