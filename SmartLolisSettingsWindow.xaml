@@ -525,7 +525,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock x:Name="txtTextSectionTitle" Text="TEXT" Style="{StaticResource SectionTitleStyle}" Margin="0" />
-                            <TextBlock x:Name="txtTextToggleLabel" Grid.Column="1" Text="TEXT" Style="{StaticResource InlineToggleLabelStyle}" />
+                            <TextBlock x:Name="txtTextToggleLabel" Grid.Column="1" Text="LLM" Style="{StaticResource InlineToggleLabelStyle}" />
                             <CheckBox Grid.Column="2" x:Name="chkLlm" Style="{StaticResource BlueToggleStyle}" Margin="0" />
                         </Grid>
                         <TextBlock x:Name="txtLlmProviderLabel" Text="LLM Provider" Style="{StaticResource FieldLabelStyle}" />

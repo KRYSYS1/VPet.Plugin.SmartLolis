@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Panuon.WPF.UI;
 using VPet_Simulator.Core;
 using VPet_Simulator.Windows.Interface;
 
@@ -32,12 +33,16 @@ namespace VPet.Plugin.SmartLolis
         private string _lastObservedVoiceText = string.Empty;
         private DateTime _lastVoiceTextChangeUtc = DateTime.MinValue;
         private DateTime _voiceSessionStartedUtc = DateTime.MinValue;
+        private readonly string _defaultTalkWatermark;
 
         public SmartLolisTalkBox(SmartLolisPlugin plugin) : base(plugin)
         {
             _plugin = plugin;
             _btnVoice = InitializeVoiceInputButton();
             _dictationHost = new HiddenDictationHost();
+            _defaultTalkWatermark = TextBoxHelper.GetWatermark(tbTalk)?.ToString() ?? string.Empty;
+            tbTalk.GotKeyboardFocus += (_, _) => ApplyFocusedTextInputVisualState();
+            tbTalk.LostKeyboardFocus += (_, _) => RestoreTextInputVisualState();
             RestoreTextInputVisualState();
             Loaded += (_, _) =>
             {
@@ -399,11 +404,25 @@ namespace VPet.Plugin.SmartLolis
 
         private void RestoreTextInputVisualState()
         {
-            tbTalk.ClearValue(TextBox.CaretBrushProperty);
+            tbTalk.CaretBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
             tbTalk.ClearValue(TextBox.SelectionBrushProperty);
             tbTalk.SelectionOpacity = 0.4;
             tbTalk.IsReadOnly = false;
             tbTalk.IsEnabled = true;
+
+            if (!_voiceSessionActive && string.IsNullOrWhiteSpace(tbTalk.Text))
+                TextBoxHelper.SetWatermark(tbTalk, _defaultTalkWatermark);
+        }
+
+        private void ApplyFocusedTextInputVisualState()
+        {
+            if (_voiceSessionActive || _isStartingVoiceInput)
+                return;
+
+            tbTalk.CaretBrush = new SolidColorBrush(Color.FromRgb(33, 76, 109));
+            tbTalk.ClearValue(TextBox.SelectionBrushProperty);
+            tbTalk.SelectionOpacity = 0.4;
+            TextBoxHelper.SetWatermark(tbTalk, string.Empty);
         }
 
         private void ShowDictationHost()
@@ -497,7 +516,13 @@ namespace VPet.Plugin.SmartLolis
             if (string.IsNullOrWhiteSpace(normalized))
                 return false;
 
-            if (ContainsAny(normalized, "СЃС‚РѕРї", "РѕСЃС‚Р°РЅРѕРІ", "РїСЂРµРєСЂР°С‚Рё", "С…РІР°С‚РёС‚", "РѕС‚РјРµРЅРё", "cancel", "stop"))
+            if (ContainsAny(normalized,
+                "\u0441\u0442\u043e\u043f",
+                "\u043e\u0441\u0442\u0430\u043d\u043e\u0432",
+                "\u043f\u0440\u0435\u043a\u0440\u0430\u0442\u0438",
+                "\u0445\u0432\u0430\u0442\u0438\u0442",
+                "\u043e\u0442\u043c\u0435\u043d\u0438",
+                "cancel", "stop"))
             {
                 StopCurrentActivity();
                 return true;
@@ -595,14 +620,27 @@ namespace VPet.Plugin.SmartLolis
             if (_pendingSelection == null)
                 return false;
 
-            if (ContainsAny(normalizedText, "РЅРµ РІР°Р¶РЅРѕ", "Р»СЋР±", "any", "Р»СЋР±Р°СЏ", "Р»СЋР±РѕР№", "СЂР°РЅРґРѕРј", "random", "РїРµСЂРІ"))
+            if (ContainsAny(normalizedText,
+                "\u043d\u0435 \u0432\u0430\u0436\u043d\u043e",
+                "\u043b\u044e\u0431",
+                "any",
+                "\u043b\u044e\u0431\u0430\u044f",
+                "\u043b\u044e\u0431\u043e\u0439",
+                "\u0440\u0430\u043d\u0434\u043e\u043c",
+                "random",
+                "\u043f\u0435\u0440\u0432"))
             {
                 StartActivity(_pendingSelection.Options[0]);
                 _pendingSelection = null;
                 return true;
             }
 
-            if (ContainsAny(normalizedText, "РѕС‚РјРµРЅР°", "РѕС‚РјРµРЅРё", "cancel", "РЅРµ РЅР°РґРѕ", "РЅРµ РЅСѓР¶РЅРѕ"))
+            if (ContainsAny(normalizedText,
+                "\u043e\u0442\u043c\u0435\u043d\u0430",
+                "\u043e\u0442\u043c\u0435\u043d\u0438",
+                "cancel",
+                "\u043d\u0435 \u043d\u0430\u0434\u043e",
+                "\u043d\u0435 \u043d\u0443\u0436\u043d\u043e"))
             {
                 _pendingSelection = null;
                 SpeakLocalResponse("Okay, command canceled.");
@@ -627,14 +665,27 @@ namespace VPet.Plugin.SmartLolis
             if (_pendingItemSelection == null)
                 return false;
 
-            if (ContainsAny(normalizedText, "РЅРµ РІР°Р¶РЅРѕ", "Р»СЋР±", "any", "Р»СЋР±Р°СЏ", "Р»СЋР±РѕР№", "СЂР°РЅРґРѕРј", "random", "РїРµСЂРІ"))
+            if (ContainsAny(normalizedText,
+                "\u043d\u0435 \u0432\u0430\u0436\u043d\u043e",
+                "\u043b\u044e\u0431",
+                "any",
+                "\u043b\u044e\u0431\u0430\u044f",
+                "\u043b\u044e\u0431\u043e\u0439",
+                "\u0440\u0430\u043d\u0434\u043e\u043c",
+                "random",
+                "\u043f\u0435\u0440\u0432"))
             {
                 TakeItem(_pendingItemSelection.Options[0]);
                 _pendingItemSelection = null;
                 return true;
             }
 
-            if (ContainsAny(normalizedText, "РѕС‚РјРµРЅР°", "РѕС‚РјРµРЅРё", "cancel", "РЅРµ РЅР°РґРѕ", "РЅРµ РЅСѓР¶РЅРѕ"))
+            if (ContainsAny(normalizedText,
+                "\u043e\u0442\u043c\u0435\u043d\u0430",
+                "\u043e\u0442\u043c\u0435\u043d\u0438",
+                "cancel",
+                "\u043d\u0435 \u043d\u0430\u0434\u043e",
+                "\u043d\u0435 \u043d\u0443\u0436\u043d\u043e"))
             {
                 _pendingItemSelection = null;
                 SpeakLocalResponse("Okay, command canceled.");
@@ -725,10 +776,36 @@ namespace VPet.Plugin.SmartLolis
 
         private List<Food> GetItemsForCommand(string normalizedText, List<Food> allItems)
         {
-            bool wantsDrink = ContainsAny(normalizedText, "??????????", "????????", "????????????", "drink", "water", "????????", "??????", "??????", "????????", "?", "??", "?", "??", "?", "??", "??");
-            bool wantsMedicine = ContainsAny(normalizedText, "??????????", "????????????", "medicine", "med", "drug", "heal", "??????", "?", "??", "??", "??");
-            bool wantsGift = ContainsAny(normalizedText, "??????????", "gift", "present", "??", "???", "???");
-            bool wantsFood = ContainsAny(normalizedText, "??????", "????????????", "??????????????", "food", "meal", "snack", "??????", "?", "??", "?", "??", "??", "??");
+            bool wantsDrink = ContainsAny(normalizedText,
+                "\u043d\u0430\u043f\u043e\u0438",
+                "\u043f\u043e\u043f\u0438\u0442\u044c",
+                "\u0434\u0430\u0439 \u0432\u043e\u0434\u0443",
+                "drink", "water",
+                "\u0432\u043e\u0434\u0430",
+                "\u043d\u0430\u043f\u0438\u0442\u043e\u043a",
+                "\u043f\u0438\u0442\u044c",
+                "\u0432\u044b\u043f\u0438\u0442\u044c",
+                "\u559D", "\u559D\u6C34", "\u6C34", "\u996E\u6599", "\u996E\u7528");
+            bool wantsMedicine = ContainsAny(normalizedText,
+                "\u0434\u0430\u0439 \u043b\u0435\u043a\u0430\u0440",
+                "\u043b\u0435\u0447\u0438",
+                "medicine", "med", "drug", "heal",
+                "\u043b\u0435\u043a\u0430\u0440\u0441\u0442\u0432",
+                "\u836F", "\u5403\u836F", "\u7528\u836F", "\u6CBB\u7597");
+            bool wantsGift = ContainsAny(normalizedText,
+                "\u0434\u0430\u0439 \u043f\u043e\u0434\u0430\u0440\u043e\u043a",
+                "gift", "present",
+                "\u043f\u043e\u0434\u0430\u0440\u043e\u043a",
+                "\u793C\u7269", "\u9001\u793C");
+            bool wantsFood = ContainsAny(normalizedText,
+                "\u043f\u043e\u043a\u043e\u0440\u043c\u0438",
+                "\u0434\u0430\u0439 \u0435\u0434\u0443",
+                "\u043f\u043e\u0435\u0441\u0442\u044c",
+                "food", "meal", "snack",
+                "\u0435\u0434\u0430",
+                "\u043a\u0443\u0448\u0430\u0442\u044c",
+                "\u043f\u043e\u0435\u0441\u0442\u044c",
+                "\u5582", "\u5582\u5979", "\u5403\u7684", "\u98DF\u7269", "\u96F6\u98DF");
 
             if (wantsDrink)
                 return allItems.Where(i => i.Type == Food.FoodType.Drink).ToList();
@@ -897,11 +974,25 @@ namespace VPet.Plugin.SmartLolis
         {
             return type switch
             {
-                GraphHelper.Work.WorkType.Study => ContainsAny(normalizedText, "????????", "??????", "????????", "learn", "study", "studying", "studying",
+                GraphHelper.Work.WorkType.Study => ContainsAny(normalizedText,
+                    "\u0443\u0447\u0435\u0431",
+                    "\u0443\u0447\u0438\u0441\u044c",
+                    "\u0437\u0430\u0439\u043c\u0438\u0441\u044c \u0443\u0447\u0435\u0431",
+                    "\u0437\u0430\u0439\u043c\u0438\u0441\u044c \u0443\u0447\u0451\u0431",
+                    "learn", "study", "studying",
                     "\u5B66\u4E60", "\u53BB\u5B66\u4E60", "\u8BFB\u4E66", "\u4E0A\u8BFE"),
-                GraphHelper.Work.WorkType.Work => ContainsAny(normalizedText, "??????????", "??????????", "job", "work", "working", "????????",
+                GraphHelper.Work.WorkType.Work => ContainsAny(normalizedText,
+                    "\u0440\u0430\u0431\u043e\u0442",
+                    "\u0437\u0430\u0439\u043c\u0438\u0441\u044c \u0440\u0430\u0431\u043e\u0442",
+                    "\u0438\u0434\u0438 \u0440\u0430\u0431\u043e\u0442",
+                    "job", "work", "working",
                     "\u5DE5\u4F5C", "\u53BB\u5DE5\u4F5C", "\u4E0A\u73ED", "\u6253\u5DE5"),
-                GraphHelper.Work.WorkType.Play => ContainsAny(normalizedText, "??????", "????????", "??????????", "??????????", "play", "fun", "relax",
+                GraphHelper.Work.WorkType.Play => ContainsAny(normalizedText,
+                    "\u0438\u0433\u0440",
+                    "\u043f\u043e\u0438\u0433\u0440\u0430\u0439",
+                    "\u043e\u0442\u0434\u043e\u0445\u043d\u0438",
+                    "\u043f\u043e\u0433\u0443\u043b\u044f\u0439",
+                    "play", "fun", "relax",
                     "\u73A9", "\u53BB\u73A9", "\u73A9\u800D", "\u4F11\u606F"),
                 _ => false
             };
@@ -910,9 +1001,20 @@ namespace VPet.Plugin.SmartLolis
         private static bool ContainsItemIntent(string normalizedText)
         {
             return ContainsAny(normalizedText,
-                "РєСѓРїРё", "РєСѓРїРё", "РІР·СЏС‚СЊ", "РІРѕР·СЊРјРё", "РёСЃРїРѕР»СЊР·", "РґР°Р№", "РїРѕРґР°Р№",
-                "РїРѕРєРѕСЂРјРё", "РїРѕРµСЃС‚СЊ", "РЅР°РєРѕСЂРјРё", "РЅР°РїРѕРё", "РїРёС‚СЊ", "РІС‹РїРёС‚СЊ",
-                "??????????", "??????????", "food", "drink", "gift", "buy", "use", "feed",
+                "\u043a\u0443\u043f\u0438",
+                "\u0432\u0437\u044f\u0442\u044c",
+                "\u0432\u043e\u0437\u044c\u043c\u0438",
+                "\u0438\u0441\u043f\u043e\u043b\u044c\u0437",
+                "\u0434\u0430\u0439",
+                "\u043f\u043e\u0434\u0430\u0439",
+                "\u043f\u043e\u043a\u043e\u0440\u043c\u0438",
+                "\u043f\u043e\u0435\u0441\u0442\u044c",
+                "\u043d\u0430\u043a\u043e\u0440\u043c\u0438",
+                "\u043d\u0430\u043f\u043e\u0438",
+                "\u043f\u0438\u0442\u044c",
+                "\u0432\u044b\u043f\u0438\u0442\u044c",
+                "\u0435\u0434\u0430", "\u0432\u043e\u0434\u0430",
+                "food", "drink", "gift", "buy", "use", "feed",
                 "\u4E70", "\u8D2D\u4E70", "\u4F7F\u7528", "\u7ED9\u5979", "\u5582", "\u5582\u5979", "\u559D", "\u559D\u6C34", "\u836F", "\u793C\u7269");
         }
 
@@ -922,9 +1024,27 @@ namespace VPet.Plugin.SmartLolis
                 return false;
 
             return ContainsAny(normalizedText,
-                "Р·Р°Р№РјРёСЃСЊ", "РёРґРё", "РЅР°С‡РЅРё", "РґР°РІР°Р№", "РїРѕСЂР°Р±РѕС‚Р°Р№", "РїРѕСѓС‡РёСЃСЊ", "СѓС‡РёСЃСЊ", "СЂР°Р±РѕС‚Р°Р№", "РїРѕРёРіСЂР°Р№",
-                "СЃС‚РѕРї", "РѕСЃС‚Р°РЅРѕРІ", "РїСЂРµРєСЂР°С‚Рё", "РѕС‚РјРµРЅРё",
-                "РїРѕРєРѕСЂРјРё", "РЅР°РєРѕСЂРјРё", "РЅР°РїРѕРё", "РґР°Р№ Р»РµРєР°СЂ", "РґР°Р№ РїРѕРґР°СЂРѕРє", "РєСѓРїРё", "РєСѓС€Р°Р№", "РїРѕРµС€СЊ",
+                "\u0437\u0430\u0439\u043c\u0438\u0441\u044c",
+                "\u0438\u0434\u0438",
+                "\u043d\u0430\u0447\u043d\u0438",
+                "\u0434\u0430\u0432\u0430\u0439",
+                "\u043f\u043e\u0440\u0430\u0431\u043e\u0442\u0430\u0439",
+                "\u043f\u043e\u0443\u0447\u0438\u0441\u044c",
+                "\u0443\u0447\u0438\u0441\u044c",
+                "\u0440\u0430\u0431\u043e\u0442\u0430\u0439",
+                "\u043f\u043e\u0438\u0433\u0440\u0430\u0439",
+                "\u0441\u0442\u043e\u043f",
+                "\u043e\u0441\u0442\u0430\u043d\u043e\u0432",
+                "\u043f\u0440\u0435\u043a\u0440\u0430\u0442\u0438",
+                "\u043e\u0442\u043c\u0435\u043d\u0438",
+                "\u043f\u043e\u043a\u043e\u0440\u043c\u0438",
+                "\u043d\u0430\u043a\u043e\u0440\u043c\u0438",
+                "\u043d\u0430\u043f\u043e\u0438",
+                "\u0434\u0430\u0439 \u043b\u0435\u043a\u0430\u0440",
+                "\u0434\u0430\u0439 \u043f\u043e\u0434\u0430\u0440\u043e\u043a",
+                "\u043a\u0443\u043f\u0438",
+                "\u043a\u0443\u0448\u0430\u0439",
+                "\u043f\u043e\u0435\u0448\u044c",
                 "start work", "start study", "start play", "buy", "feed", "drink", "use medicine", "stop",
                 "\u53BB\u5B66\u4E60", "\u5B66\u4E60", "\u53BB\u5DE5\u4F5C", "\u5DE5\u4F5C", "\u53BB\u73A9", "\u73A9",
                 "\u505C\u6B62", "\u53D6\u6D88", "\u4E70", "\u4E70\u6C34", "\u5582\u5979", "\u8BA9\u5979\u559D\u6C34", "\u7ED9\u5979\u5403\u836F", "\u4E70\u793C\u7269");
@@ -933,7 +1053,14 @@ namespace VPet.Plugin.SmartLolis
         private static bool IsPendingSelectionCancelCommand(string normalizedText)
         {
             return ContainsAny(normalizedText,
-                "СЃС‚РѕРї", "РѕСЃС‚Р°РЅРѕРІРёСЃСЊ", "РѕСЃС‚Р°РЅРѕРІРё", "РѕС‚РјРµРЅР°", "РѕС‚РјРµРЅРё", "РЅРµ РЅР°РґРѕ", "РЅРµ РЅСѓР¶РЅРѕ", "С…РІР°С‚РёС‚",
+                "\u0441\u0442\u043e\u043f",
+                "\u043e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0441\u044c",
+                "\u043e\u0441\u0442\u0430\u043d\u043e\u0432\u0438",
+                "\u043e\u0442\u043c\u0435\u043d\u0430",
+                "\u043e\u0442\u043c\u0435\u043d\u0438",
+                "\u043d\u0435 \u043d\u0430\u0434\u043e",
+                "\u043d\u0435 \u043d\u0443\u0436\u043d\u043e",
+                "\u0445\u0432\u0430\u0442\u0438\u0442",
                 "cancel", "stop", "never mind", "\u505C\u6B62", "\u53D6\u6D88", "\u4E0D\u7528\u4E86", "\u7B97\u4E86");
         }
 
@@ -980,14 +1107,14 @@ namespace VPet.Plugin.SmartLolis
                 return true;
 
             string normalized = NormalizeCommandText(trimmed);
-            return normalized.StartsWith("С‡С‚Рѕ ", StringComparison.Ordinal) ||
-                   normalized.StartsWith("С‡РµРј ", StringComparison.Ordinal) ||
-                   normalized.StartsWith("РєР°РєРѕР№ ", StringComparison.Ordinal) ||
-                   normalized.StartsWith("РєР°РєР°СЏ ", StringComparison.Ordinal) ||
-                   normalized.StartsWith("РєР°РєРѕРµ ", StringComparison.Ordinal) ||
-                   normalized.StartsWith("РєР°РєРёРµ ", StringComparison.Ordinal) ||
-                   normalized.StartsWith("РїРѕС‡РµРјСѓ ", StringComparison.Ordinal) ||
-                   normalized.StartsWith("Р·Р°С‡РµРј ", StringComparison.Ordinal) ||
+            return normalized.StartsWith("\u0447\u0442\u043e ", StringComparison.Ordinal) ||
+                   normalized.StartsWith("\u0447\u0435\u043c ", StringComparison.Ordinal) ||
+                   normalized.StartsWith("\u043a\u0430\u043a\u043e\u0439 ", StringComparison.Ordinal) ||
+                   normalized.StartsWith("\u043a\u0430\u043a\u0430\u044f ", StringComparison.Ordinal) ||
+                   normalized.StartsWith("\u043a\u0430\u043a\u043e\u0435 ", StringComparison.Ordinal) ||
+                   normalized.StartsWith("\u043a\u0430\u043a\u0438\u0435 ", StringComparison.Ordinal) ||
+                   normalized.StartsWith("\u043f\u043e\u0447\u0435\u043c\u0443 ", StringComparison.Ordinal) ||
+                   normalized.StartsWith("\u0437\u0430\u0447\u0435\u043c ", StringComparison.Ordinal) ||
                    normalized.StartsWith("how ", StringComparison.Ordinal) ||
                    normalized.StartsWith("what ", StringComparison.Ordinal) ||
                    normalized.StartsWith("why ", StringComparison.Ordinal);
@@ -1012,7 +1139,7 @@ namespace VPet.Plugin.SmartLolis
                 return false;
 
             string trimmed = content.Trim();
-            string[] prefixes = ["/", "!", "cmd ", "command ", "РєРѕРјР°РЅРґР° ", "РїСЂРёРєР°Р· "];
+            string[] prefixes = ["/", "!", "cmd ", "command ", "\u043a\u043e\u043c\u0430\u043d\u0434\u0430 ", "\u043f\u0440\u0438\u043a\u0430\u0437 "];
             foreach (string prefix in prefixes)
             {
                 if (!trimmed.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
