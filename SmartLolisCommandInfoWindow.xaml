@@ -1,0 +1,153 @@
+﻿<Window x:Class="VPet.Plugin.SmartLolis.SmartLolisCommandInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Smart Lolis Command Info"
+        Width="640"
+        Height="560"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip"
+        Background="#F5F7FA">
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Background="#FFFFFF"
+                BorderBrush="#C9D7E2"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="18"
+                Margin="0,0,0,12">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Name="txtWindowTitle"
+                           Text="COMMAND INFO"
+                           Foreground="#2A6D96"
+                           FontFamily="Bahnschrift SemiBold"
+                           FontSize="26" />
+                <TextBlock x:Name="txtWindowSubtitle"
+                           Grid.Row="1"
+                           Margin="0,10,0,0"
+                           Text="Use these phrases in chat or by voice to control Smart Lolis."
+                           Foreground="#627989"
+                           FontFamily="Bahnschrift"
+                           FontSize="13"
+                           TextWrapping="Wrap" />
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Border Background="#FFFFFF" BorderBrush="#C9D7E2" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock x:Name="txtGeneralTitle" Text="GENERAL" Foreground="#2A6D96" FontFamily="Bahnschrift SemiBold" FontSize="18" />
+                        <TextBlock x:Name="txtGeneralHint" Text="These work as typed commands and as voice commands." Foreground="#768A98" FontFamily="Bahnschrift" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap" />
+                        <TextBlock x:Name="txtGeneralBody" Text="You can use direct phrases like `start studying`, or prefixes such as `/`, `!`, `cmd`, `command`, `команда`, `приказ`." Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,10,0,0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#FFFFFF" BorderBrush="#C9D7E2" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock x:Name="txtActivityTitle" Text="ACTIVITY COMMANDS" Foreground="#2A6D96" FontFamily="Bahnschrift SemiBold" FontSize="18" />
+                        <TextBlock x:Name="txtActivityLine1" Text="/start studying" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,10,0,0" />
+                        <TextBlock x:Name="txtActivityLine2" Text="start working" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtActivityLine3" Text="go play" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtActivityLine4" Text="stop" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtActivityHint" Text="If several variants exist, Smart Lolis will ask which one you mean." Foreground="#768A98" FontFamily="Bahnschrift" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap" />
+                        <TextBlock x:Name="txtActivityExampleTitle" Text="Example:" Foreground="#2A6D96" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,12,0,0" />
+                        <TextBlock x:Name="txtActivityExample1" Text="You: start studying" Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,6,0,0" />
+                        <TextBlock x:Name="txtActivityExample2" Text="Smart Lolis: Which study do you want?" Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,2,0,0" />
+                        <TextBlock x:Name="txtActivityExample3" Text="You: drawing" Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#FFFFFF" BorderBrush="#C9D7E2" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock x:Name="txtItemTitle" Text="ITEM COMMANDS" Foreground="#2A6D96" FontFamily="Bahnschrift SemiBold" FontSize="18" />
+                        <TextBlock x:Name="txtItemLine1" Text="feed yourself" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,10,0,0" />
+                        <TextBlock x:Name="txtItemLine2" Text="drink water" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtItemLine3" Text="take medicine" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtItemLine4" Text="buy a gift" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtItemLine5" Text="/buy water" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtItemHint" Text="You can also say a specific item name when Smart Lolis asks for clarification." Foreground="#768A98" FontFamily="Bahnschrift" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap" />
+                        <TextBlock x:Name="txtItemExampleTitle" Text="Examples:" Foreground="#2A6D96" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,12,0,0" />
+                        <TextBlock x:Name="txtItemExample1" Text="You: feed yourself" Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,6,0,0" />
+                        <TextBlock x:Name="txtItemExample2" Text="Smart Lolis: Which food do you want?" Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,2,0,0" />
+                        <TextBlock x:Name="txtItemExample3" Text="You: sushi" Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,2,0,0" />
+                        <TextBlock x:Name="txtItemExample4" Text="You: take medicine" Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,8,0,0" />
+                        <TextBlock x:Name="txtItemExample5" Text="You: buy a gift" Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#F4FAFE" BorderBrush="#C9D7E2" BorderThickness="1" CornerRadius="8" Padding="16">
+                    <StackPanel>
+                        <TextBlock x:Name="txtVoiceExampleTitle" Text="VOICE EXAMPLE" Foreground="#2A6D96" FontFamily="Bahnschrift SemiBold" FontSize="18" />
+                        <TextBlock x:Name="txtVoiceExample1" Text="1. Press the voice input button." Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,10,0,0" />
+                        <TextBlock x:Name="txtVoiceExample2" Text="2. Say: `start studying`." Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtVoiceExample3" Text="3. If she asks, name a specific option like `drawing`." Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtVoiceExample4" Text="4. For items it works the same way: `feed yourself`, then `soup` or another item name." Foreground="#324B5C" FontFamily="Bahnschrift" FontSize="13" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#FFFFFF" BorderBrush="#C9D7E2" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,12,0,0">
+                    <StackPanel>
+                        <TextBlock x:Name="txtMoreExamplesTitle" Text="MORE EXAMPLES" Foreground="#2A6D96" FontFamily="Bahnschrift SemiBold" FontSize="18" />
+                        <TextBlock x:Name="txtMoreExample1" Text="`/start working`" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,10,0,0" />
+                        <TextBlock x:Name="txtMoreExample2" Text="`!stop`" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtMoreExample3" Text="`command go play`" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtMoreExample4" Text="`command drink water`" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,4,0,0" />
+                        <TextBlock x:Name="txtMoreExample5" Text="`/buy a gift`" Foreground="#324B5C" FontFamily="Bahnschrift SemiBold" FontSize="13" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button x:Name="btnClose"
+                    Width="128"
+                    Height="38"
+                    Content="Close"
+                    Click="BtnClose_Click"
+                    FontFamily="Bahnschrift"
+                    FontWeight="SemiBold"
+                    Foreground="#324B5C"
+                    Background="#F5FCFF"
+                    BorderBrush="#C9D7E2"
+                    BorderThickness="1">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <Border Height="2" VerticalAlignment="Top" Background="{TemplateBinding BorderBrush}" Opacity="0.9" />
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Margin="10,0"
+                                                  RecognizesAccessKey="True" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.92" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.82" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

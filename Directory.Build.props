@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>artifacts\obj\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>artifacts\obj\</MSBuildProjectExtensionsPath>
+    <IntermediateOutputPath>artifacts\obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+    <OutputPath>artifacts\bin\$(Platform)\$(Configuration)\</OutputPath>
+    <DefaultItemExcludes>$(DefaultItemExcludes);artifacts\**</DefaultItemExcludes>
+  </PropertyGroup>
+</Project>

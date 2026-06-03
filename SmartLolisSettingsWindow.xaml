@@ -1,0 +1,849 @@
+﻿<Window x:Class="VPet.Plugin.SmartLolis.SmartLolisSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Smart Lolis Settings"
+        Width="760"
+        Height="780"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip"
+        Background="#F5F7FA">
+    <Window.Resources>
+        <SolidColorBrush x:Key="BorderBrush" Color="#C9D7E2"/>
+        <SolidColorBrush x:Key="BorderBrightBrush" Color="#7FC7F0"/>
+        <SolidColorBrush x:Key="HeadBrush" Color="#2A6D96"/>
+        <SolidColorBrush x:Key="TextBrush" Color="#324B5C"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#768A98"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#52B6E8"/>
+        <SolidColorBrush x:Key="AccentAzureBrush" Color="#45ACE3"/>
+        <SolidColorBrush x:Key="AccentTurquoiseBrush" Color="#46C7C6"/>
+        <SolidColorBrush x:Key="AccentPurpleBrush" Color="#8F79E8"/>
+        <SolidColorBrush x:Key="InputBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="GlassBrush" Color="#F8FBFD"/>
+        <SolidColorBrush x:Key="GlassPanelBrush" Color="#FFFFFF"/>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="FontFamily" Value="Bahnschrift" />
+        </Style>
+
+        <Style x:Key="HeaderBigStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource HeadBrush}" />
+            <Setter Property="FontFamily" Value="Bahnschrift SemiBold" />
+            <Setter Property="FontSize" Value="28" />
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource HeadBrush}" />
+            <Setter Property="FontFamily" Value="Bahnschrift SemiBold" />
+            <Setter Property="FontSize" Value="19" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+
+        <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource HeadBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+
+        <Style x:Key="HintStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,6,0,0" />
+        </Style>
+
+        <Style x:Key="StatusTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="FontFamily" Value="Bahnschrift" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="InlineToggleLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource HeadBrush}" />
+            <Setter Property="FontFamily" Value="Bahnschrift SemiBold" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="Background" Value="{StaticResource InputBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontFamily" Value="Bahnschrift" />
+        </Style>
+
+        <Style TargetType="PasswordBox">
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="Background" Value="{StaticResource InputBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontFamily" Value="Bahnschrift" />
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="Background" Value="{StaticResource InputBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontFamily" Value="Bahnschrift" />
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Background" Value="{StaticResource InputBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                        <Setter Property="Padding" Value="10,6" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Style.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" Value="#D8F0FF" />
+                                <Setter Property="Foreground" Value="#1F4E6D" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#C9E9FF" />
+                                <Setter Property="Foreground" Value="#1F4E6D" />
+                            </Trigger>
+                        </Style.Triggers>
+                        </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="MainBorder"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    SnapsToDevicePixels="True">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="34" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox x:Name="PART_EditableTextBox"
+                                             Margin="10,0,6,0"
+                                             VerticalContentAlignment="Center"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             Foreground="{TemplateBinding Foreground}"
+                                             FontFamily="{TemplateBinding FontFamily}"
+                                             Visibility="Hidden" />
+
+                                    <ContentPresenter x:Name="ContentSite"
+                                                      Margin="10,0,6,0"
+                                                      VerticalAlignment="Center"
+                                                      HorizontalAlignment="Left"
+                                                      Content="{TemplateBinding SelectionBoxItem}"
+                                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                      ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                      IsHitTestVisible="False" />
+
+                                    <ToggleButton Grid.Column="1"
+                                                  Focusable="False"
+                                                  IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                  ClickMode="Press"
+                                                  Background="Transparent"
+                                                  BorderBrush="Transparent">
+                                        <Path Width="10"
+                                              Height="6"
+                                              Stretch="Fill"
+                                              Fill="{StaticResource TextBrush}"
+                                              Data="M 0 0 L 10 0 L 5 6 Z"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                                    </ToggleButton>
+                                </Grid>
+                            </Border>
+
+                            <Popup x:Name="Popup"
+                                   Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Fade">
+                                <Border x:Name="DropDownBorder"
+                                        Margin="0,2,0,0"
+                                        MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                        Background="{StaticResource InputBrush}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="1"
+                                        SnapsToDevicePixels="True">
+                                    <ScrollViewer Margin="0"
+                                                  SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True"
+                                                    KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEditable" Value="True">
+                                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="MainBorder" Property="BorderBrush" Value="{StaticResource BorderBrightBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="MainBorder" Property="BorderBrush" Value="{StaticResource AccentAzureBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontFamily" Value="Bahnschrift" />
+            <Setter Property="Margin" Value="0,0,18,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border x:Name="SwitchTrack"
+                                    Width="46"
+                                    Height="24"
+                                    CornerRadius="12"
+                                    Background="#EEF4F8"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    VerticalAlignment="Center">
+                                <Grid>
+                                    <Border x:Name="SwitchKnob"
+                                            Width="18"
+                                            Height="18"
+                                            CornerRadius="9"
+                                            Background="#E8DFC8"
+                                            HorizontalAlignment="Left"
+                                            Margin="3,0,0,0"
+                                            VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                            <ContentPresenter Margin="10,0,0,0"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True" />
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="SwitchTrack" Property="Background" Value="#D7F6E7" />
+                                <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#38B966" />
+                                <Setter TargetName="SwitchKnob" Property="HorizontalAlignment" Value="Right" />
+                                <Setter TargetName="SwitchKnob" Property="Margin" Value="0,0,3,0" />
+                                <Setter TargetName="SwitchKnob" Property="Background" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter TargetName="SwitchTrack" Property="Background" Value="#EEF4F8" />
+                                <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#BDD0DC" />
+                                <Setter TargetName="SwitchKnob" Property="Background" Value="#FFFFFF" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="SwitchTrack" Property="Opacity" Value="0.95" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="SwitchTrack" Property="Opacity" Value="0.45" />
+                                <Setter TargetName="SwitchKnob" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BlueToggleStyle" TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Border x:Name="SwitchTrack"
+                                Width="46"
+                                Height="24"
+                                CornerRadius="12"
+                                Background="#E8EEF3"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                VerticalAlignment="Center">
+                            <Grid>
+                                <Border x:Name="SwitchKnob"
+                                        Width="18"
+                                        Height="18"
+                                        CornerRadius="9"
+                                        Background="#FFFFFF"
+                                        HorizontalAlignment="Left"
+                                        Margin="3,0,0,0"
+                                        VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="SwitchTrack" Property="Background" Value="#DDF1FF" />
+                                <Setter TargetName="SwitchTrack" Property="BorderBrush" Value="#59B7EA" />
+                                <Setter TargetName="SwitchKnob" Property="HorizontalAlignment" Value="Right" />
+                                <Setter TargetName="SwitchKnob" Property="Margin" Value="0,0,3,0" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="SwitchTrack" Property="Opacity" Value="0.95" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="SwitchTrack" Property="Opacity" Value="0.45" />
+                                <Setter TargetName="SwitchKnob" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CalendarButtonBaseStyle" TargetType="Button">
+            <Setter Property="Width" Value="136" />
+            <Setter Property="Height" Value="38" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Foreground" Value="#2A5975" />
+            <Setter Property="FontFamily" Value="Bahnschrift" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <Border Height="2"
+                                        VerticalAlignment="Top"
+                                        Background="{TemplateBinding BorderBrush}"
+                                        Opacity="0.9" />
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Margin="10,0"
+                                                  RecognizesAccessKey="True" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.92" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.82" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource CalendarButtonBaseStyle}">
+            <Setter Property="Background" Value="#D8F0FF" />
+            <Setter Property="BorderBrush" Value="#59B7EA" />
+        </Style>
+
+        <Style x:Key="SuccessButtonStyle" TargetType="Button" BasedOn="{StaticResource CalendarButtonBaseStyle}">
+            <Setter Property="Background" Value="#E4F6E8" />
+            <Setter Property="BorderBrush" Value="#64B878" />
+        </Style>
+
+        <Style x:Key="AzureButtonStyle" TargetType="Button" BasedOn="{StaticResource CalendarButtonBaseStyle}">
+            <Setter Property="Background" Value="#D4F0FF" />
+            <Setter Property="BorderBrush" Value="#69B7EB" />
+        </Style>
+
+        <Style x:Key="PurpleButtonStyle" TargetType="Button" BasedOn="{StaticResource CalendarButtonBaseStyle}">
+            <Setter Property="Background" Value="#ECE3FF" />
+            <Setter Property="BorderBrush" Value="#9C88E8" />
+        </Style>
+
+        <Style x:Key="DangerButtonStyle" TargetType="Button" BasedOn="{StaticResource CalendarButtonBaseStyle}">
+            <Setter Property="Background" Value="#FFE9ED" />
+            <Setter Property="BorderBrush" Value="#D96B80" />
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource CalendarButtonBaseStyle}">
+            <Setter Property="Background" Value="#F5FCFF" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        </Style>
+
+        <Style x:Key="TestButtonBaseStyle" TargetType="Button" BasedOn="{StaticResource CalendarButtonBaseStyle}">
+            <Setter Property="Width" Value="Auto" />
+            <Setter Property="Height" Value="42" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="FontFamily" Value="Bahnschrift SemiBold" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Margin" Value="0,12,0,0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <Border Height="1"
+                                        VerticalAlignment="Top"
+                                        Background="{TemplateBinding BorderBrush}"
+                                        Opacity="0.95" />
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Margin="10,0,10,1"
+                                                  RecognizesAccessKey="True" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.94" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.84" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TestLlmButtonStyle" TargetType="Button" BasedOn="{StaticResource TestButtonBaseStyle}">
+            <Setter Property="Background" Value="#E4F6E8" />
+            <Setter Property="BorderBrush" Value="#64B878" />
+        </Style>
+
+        <Style x:Key="TestTtsButtonStyle" TargetType="Button" BasedOn="{StaticResource TestButtonBaseStyle}">
+            <Setter Property="Background" Value="#E4F6E8" />
+            <Setter Property="BorderBrush" Value="#64B878" />
+        </Style>
+
+        <Style x:Key="ProviderButtonStyle" TargetType="Button" BasedOn="{StaticResource CalendarButtonBaseStyle}">
+            <Setter Property="Width" Value="Auto" />
+            <Setter Property="MinWidth" Value="72" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Padding" Value="10,4" />
+            <Setter Property="Margin" Value="0,0,8,6" />
+            <Setter Property="Background" Value="#FFFFFF" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        </Style>
+
+        <Style x:Key="ProviderButtonActiveStyle" TargetType="Button" BasedOn="{StaticResource ProviderButtonStyle}">
+            <Setter Property="Background" Value="#D8F0FF" />
+            <Setter Property="BorderBrush" Value="#59B7EA" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="#F5F7FA">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" MinHeight="144" Margin="15,15,15,0" Background="{StaticResource GlassPanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Border Height="6" VerticalAlignment="Top" Background="{StaticResource AccentBrush}" />
+                <Grid Margin="20,18,20,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="220" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock x:Name="txtHeaderTitle" Text="SMART LOLIS" Style="{StaticResource HeaderBigStyle}" />
+                        <TextBlock x:Name="txtHeaderSubtitle1" Margin="0,8,0,0" Text="Умный чат для VPet: диалог, голосовой ввод, команды и озвучка." Foreground="{StaticResource TextBrush}" FontSize="14" />
+                        <TextBlock x:Name="txtHeaderSubtitle2" Margin="0,6,0,0" Text="Настрой текст, голос и поведение AI-компаньона." Foreground="{StaticResource MutedBrush}" FontSize="12" />
+                    </StackPanel>
+
+                    <Border Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="12,10" Background="#F3FBFF" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock x:Name="txtUiLanguageLabel" Margin="0,0,0,4" Text="LANGUAGE" Foreground="{StaticResource AccentAzureBrush}" FontFamily="Bahnschrift SemiBold" FontSize="16" />
+                            <ComboBox x:Name="cmbUiLanguage" SelectionChanged="CmbUiLanguage_SelectionChanged">
+                                <ComboBoxItem Content="Русский" Tag="ru" />
+                                <ComboBoxItem Content="English" Tag="en" />
+                                <ComboBoxItem Content="中文" Tag="zh" />
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Border x:Name="statusPanel"
+                        Grid.Row="1"
+                        Margin="20,0,20,14"
+                        Padding="12,10"
+                        Background="#F4FAFE"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Visibility="Collapsed">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="statusIconBadge"
+                                Width="20"
+                                Height="20"
+                                Margin="0,0,10,0"
+                                CornerRadius="10"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AccentAzureBrush}">
+                            <TextBlock x:Name="txtStatusIcon"
+                                       Text="!"
+                                       TextAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       FontFamily="Bahnschrift SemiBold"
+                                       Foreground="White" />
+                        </Border>
+                        <TextBlock x:Name="txtStatusMessage"
+                                   Grid.Column="1"
+                                   Style="{StaticResource StatusTextStyle}" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="15,15,15,0">
+            <StackPanel>
+                <Border Background="{StaticResource GlassPanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="16" Margin="0,0,0,12">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="txtTextSectionTitle" Text="TEXT" Style="{StaticResource SectionTitleStyle}" Margin="0" />
+                            <TextBlock x:Name="txtTextToggleLabel" Grid.Column="1" Text="LLM" Style="{StaticResource InlineToggleLabelStyle}" />
+                            <CheckBox Grid.Column="2" x:Name="chkLlm" Style="{StaticResource BlueToggleStyle}" Margin="0" />
+                        </Grid>
+                        <TextBlock x:Name="txtLlmProviderLabel" Text="LLM Provider" Style="{StaticResource FieldLabelStyle}" />
+                        <WrapPanel x:Name="panelLlmProviders" Margin="0,4,0,0">
+                            <Button x:Name="btnProvOllama" Content="Ollama" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="Ollama" />
+                            <Button x:Name="btnProvOpenAI" Content="OpenAI" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="OpenAI" />
+                            <Button x:Name="btnProvGroq" Content="Groq" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="Groq" />
+                            <Button x:Name="btnProvNVIDIA" Content="NVIDIA" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="NVIDIA" />
+                            <Button x:Name="btnProvGoogle" Content="Google" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="Google" />
+                            <Button x:Name="btnProvGitHub" Content="GitHub" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="GitHub" />
+                            <Button x:Name="btnProvCohere" Content="Cohere" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="Cohere" />
+                            <Button x:Name="btnProvCerebras" Content="Cerebras" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="Cerebras" />
+                            <Button x:Name="btnProvMistral" Content="Mistral" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="Mistral" />
+                            <Button x:Name="btnProvOpenRouter" Content="OpenRouter" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="OpenRouter" />
+                            <Button x:Name="btnProvLMStudio" Content="LM Studio" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="LM Studio" />
+                            <Button x:Name="btnProvCustom" Content="Custom" Style="{StaticResource ProviderButtonStyle}" Click="BtnProv_Click" Tag="Custom" />
+                        </WrapPanel>
+                        <TextBlock x:Name="txtLlmProviderHint" Text="Choose which chat provider will generate replies." Style="{StaticResource HintStyle}" />
+
+                        <StackPanel x:Name="panelLlmConfig">
+                            <TextBlock x:Name="txtLlmApiUrlLabel" Margin="0,16,0,4" Text="API URL" Style="{StaticResource FieldLabelStyle}" />
+                            <TextBox x:Name="txtLlmApiUrl" />
+
+                            <Grid Margin="0,16,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock x:Name="txtLlmApiKeyLabel" Margin="0,0,0,4" Text="API Key" Style="{StaticResource FieldLabelStyle}" />
+                                    <PasswordBox x:Name="txtLlmApiKey" />
+                                </StackPanel>
+                                <Button x:Name="btnGetApiKey" Grid.Column="1" Margin="8,18,0,0" Content="Get Key" Style="{StaticResource AzureButtonStyle}" MinWidth="110" Width="Auto" Height="32" Padding="10,4" Click="BtnGetApiKey_Click" />
+                            </Grid>
+                            <TextBlock x:Name="txtLlmApiKeyHint" Text="API key for the selected provider." Style="{StaticResource HintStyle}" />
+
+                            <TextBlock x:Name="txtLlmModelLabel" Margin="0,16,0,4" Text="Model" Style="{StaticResource FieldLabelStyle}" />
+                            <ComboBox x:Name="cmbLlmModel" IsEditable="True" />
+                            <TextBlock x:Name="txtLlmModelHint" Text="Model ID for the selected provider." Style="{StaticResource HintStyle}" />
+                        </StackPanel>
+
+                        <Button x:Name="btnTestLlm" Content="TEST LLM" Style="{StaticResource TestLlmButtonStyle}" Click="BtnTestLlm_Click" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="{StaticResource GlassPanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="16" Margin="0,0,0,12">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="txtVoiceSectionTitle" Text="VOICE" Style="{StaticResource SectionTitleStyle}" Margin="0" />
+                            <TextBlock x:Name="txtTtsToggleLabel" Grid.Column="1" Text="TTS" Style="{StaticResource InlineToggleLabelStyle}" />
+                            <CheckBox Grid.Column="2" x:Name="chkTts" Style="{StaticResource BlueToggleStyle}" Margin="0" />
+                        </Grid>
+                        <TextBlock x:Name="txtTtsProviderLabel" Text="TTS Provider" Style="{StaticResource FieldLabelStyle}" />
+                        <WrapPanel x:Name="panelTtsProviders" Margin="0,4,0,0">
+                            <Button x:Name="btnTtsElevenLabs" Content="ElevenLabs" Style="{StaticResource ProviderButtonStyle}" Click="BtnTtsProv_Click" Tag="ElevenLabs" />
+                            <Button x:Name="btnTtsGoogle" Content="Google" Style="{StaticResource ProviderButtonStyle}" Click="BtnTtsProv_Click" Tag="Google" />
+                            <Button x:Name="btnTtsLocalWindows" Content="Local Windows" Style="{StaticResource ProviderButtonStyle}" Click="BtnTtsProv_Click" Tag="Local Windows" />
+                            <Button x:Name="btnTtsPolly" Content="Polly" Style="{StaticResource ProviderButtonStyle}" Click="BtnTtsProv_Click" Tag="Polly" />
+                        </WrapPanel>
+                        <TextBlock x:Name="txtTtsProviderHint" Text="Choose which service will generate voice playback." Style="{StaticResource HintStyle}" />
+
+                        <StackPanel x:Name="panelElevenLabs">
+                            <Grid Margin="0,16,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock x:Name="txtElevenLabsApiKeyLabel" Margin="0,0,0,4" Text="ElevenLabs API Key" Style="{StaticResource FieldLabelStyle}" />
+                                    <PasswordBox x:Name="txtElevenLabsApiKey" />
+                                </StackPanel>
+                                <Button x:Name="btnGetElevenLabsKey" Grid.Column="1" Margin="8,18,0,0" Content="Get Key" Style="{StaticResource AzureButtonStyle}" MinWidth="110" Width="Auto" Height="32" Padding="10,4" Click="BtnGetTtsApiKey_Click" Tag="ElevenLabs" />
+                            </Grid>
+                            <TextBlock x:Name="txtElevenLabsApiKeyHint" Text="Needed only for ElevenLabs playback." Style="{StaticResource HintStyle}" />
+
+                            <Grid Margin="0,16,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock x:Name="txtElevenLabsVoiceIdLabel" Margin="0,0,0,4" Text="ElevenLabs Voice ID" Style="{StaticResource FieldLabelStyle}" />
+                                    <ComboBox x:Name="cmbElevenLabsVoiceId"
+                                              IsEditable="True"
+                                              IsTextSearchEnabled="True">
+                                        <ComboBoxItem Content="cgSgspJ2msm6clMCkdW9" />
+                                    </ComboBox>
+                                </StackPanel>
+                                <Button x:Name="btnGetElevenLabsVoice" Grid.Column="1" Margin="8,18,0,0" Content="Get Voice" Style="{StaticResource AzureButtonStyle}" MinWidth="110" Width="Auto" Height="32" Padding="10,4" Click="BtnGetVoiceId_Click" Tag="ElevenLabs" />
+                            </Grid>
+                            <TextBlock x:Name="txtElevenLabsVoiceIdHint" Text="Paste the exact voice identifier from ElevenLabs. Not the visible voice name." Style="{StaticResource HintStyle}" />
+                        </StackPanel>
+
+                        <StackPanel x:Name="panelGoogle" Visibility="Collapsed">
+                            <Grid Margin="0,16,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock x:Name="txtGoogleApiKeyLabel" Margin="0,0,0,4" Text="Google API Key" Style="{StaticResource FieldLabelStyle}" />
+                                    <PasswordBox x:Name="txtGoogleApiKey" />
+                                </StackPanel>
+                                <Button x:Name="btnGetGoogleKey" Grid.Column="1" Margin="8,18,0,0" Content="Get Key" Style="{StaticResource AzureButtonStyle}" MinWidth="110" Width="Auto" Height="32" Padding="10,4" Click="BtnGetTtsApiKey_Click" Tag="Google" />
+                            </Grid>
+                            <TextBlock x:Name="txtGoogleApiKeyHint" Text="Enable Google Cloud Text-to-Speech and paste your API key." Style="{StaticResource HintStyle}" />
+
+                            <TextBlock x:Name="txtGoogleVoiceNameLabel" Margin="0,16,0,4" Text="Google Voice Name" Style="{StaticResource FieldLabelStyle}" />
+                            <ComboBox x:Name="cmbGoogleVoiceName" IsEditable="True">
+                                <ComboBoxItem Content="ru-RU-Standard-A" />
+                                <ComboBoxItem Content="ru-RU-Standard-B" />
+                                <ComboBoxItem Content="ru-RU-Standard-C" />
+                                <ComboBoxItem Content="ru-RU-Standard-D" />
+                                <ComboBoxItem Content="ru-RU-Wavenet-A" />
+                                <ComboBoxItem Content="en-US-Standard-A" />
+                                <ComboBoxItem Content="en-US-Standard-C" />
+                                <ComboBoxItem Content="en-US-Neural2-F" />
+                                <ComboBoxItem Content="en-US-Neural2-J" />
+                                <ComboBoxItem Content="zh-CN-Standard-A" />
+                                <ComboBoxItem Content="zh-CN-Standard-B" />
+                                <ComboBoxItem Content="zh-CN-Wavenet-A" />
+                                <ComboBoxItem Content="zh-CN-Wavenet-B" />
+                                <ComboBoxItem Content="zh-TW-Standard-A" />
+                                <ComboBoxItem Content="zh-TW-Wavenet-A" />
+                                <ComboBoxItem Content="ja-JP-Standard-A" />
+                                <ComboBoxItem Content="ja-JP-Standard-B" />
+                                <ComboBoxItem Content="ja-JP-Standard-C" />
+                                <ComboBoxItem Content="ja-JP-Standard-D" />
+                                <ComboBoxItem Content="ja-JP-Wavenet-A" />
+                                <ComboBoxItem Content="ja-JP-Wavenet-B" />
+                                <ComboBoxItem Content="ko-KR-Standard-A" />
+                                <ComboBoxItem Content="ko-KR-Standard-B" />
+                                <ComboBoxItem Content="ko-KR-Standard-C" />
+                                <ComboBoxItem Content="ko-KR-Standard-D" />
+                                <ComboBoxItem Content="ko-KR-Wavenet-A" />
+                                <ComboBoxItem Content="ko-KR-Wavenet-B" />
+                            </ComboBox>
+                            <TextBlock x:Name="txtGoogleVoiceNameHint" Text="Example: ru-RU-Standard-A, en-US-Standard-C, zh-CN-Wavenet-A." Style="{StaticResource HintStyle}" />
+                        </StackPanel>
+
+                        <StackPanel x:Name="panelLocalWindows" Visibility="Collapsed">
+                            <TextBlock x:Name="txtLocalWindowsVoiceLabel" Margin="0,16,0,4" Text="Windows Voice" Style="{StaticResource FieldLabelStyle}" />
+                            <ComboBox x:Name="cmbLocalWindowsVoiceName"
+                                      IsEditable="True"
+                                      IsTextSearchEnabled="True" />
+                            <TextBlock x:Name="txtLocalWindowsVoiceHint" Text="Choose one of the installed Windows voices, or type a voice name manually. Leave empty to use the default voice." Style="{StaticResource HintStyle}" />
+                        </StackPanel>
+
+                        <StackPanel x:Name="panelPolly" Visibility="Collapsed">
+                            <Grid Margin="0,16,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock x:Name="txtPollyAccessKeyLabel" Margin="0,0,0,4" Text="Polly Access Key" Style="{StaticResource FieldLabelStyle}" />
+                                    <TextBox x:Name="txtPollyAccessKey" />
+                                </StackPanel>
+                                <Button x:Name="btnGetPollyKey" Grid.Column="1" Margin="8,18,0,0" Content="Get Key" Style="{StaticResource AzureButtonStyle}" MinWidth="110" Width="Auto" Height="32" Padding="10,4" Click="BtnGetTtsApiKey_Click" Tag="Polly" />
+                            </Grid>
+                            <TextBlock x:Name="txtPollyAccessKeyHint" Text="AWS access key for Amazon Polly." Style="{StaticResource HintStyle}" />
+
+                            <TextBlock x:Name="txtPollySecretKeyLabel" Margin="0,16,0,4" Text="Polly Secret Key" Style="{StaticResource FieldLabelStyle}" />
+                            <PasswordBox x:Name="txtPollySecretKey" />
+
+                            <TextBlock x:Name="txtPollyRegionLabel" Margin="0,16,0,4" Text="Polly Region" Style="{StaticResource FieldLabelStyle}" />
+                            <ComboBox x:Name="cmbPollyRegion">
+                                <ComboBoxItem Content="us-east-1" />
+                                <ComboBoxItem Content="us-west-2" />
+                                <ComboBoxItem Content="eu-west-1" />
+                                <ComboBoxItem Content="eu-central-1" />
+                                <ComboBoxItem Content="ap-northeast-1" />
+                            </ComboBox>
+                            <TextBlock x:Name="txtPollyRegionHint" Text="Example: us-east-1" Style="{StaticResource HintStyle}" />
+
+                            <TextBlock x:Name="txtPollyVoiceIdLabel" Margin="0,16,0,4" Text="Polly Voice ID" Style="{StaticResource FieldLabelStyle}" />
+                            <ComboBox x:Name="cmbPollyVoiceId" IsEditable="True">
+                                <ComboBoxItem Content="Tatyana" />
+                                <ComboBoxItem Content="Maxim" />
+                                <ComboBoxItem Content="Joanna" />
+                                <ComboBoxItem Content="Matthew" />
+                                <ComboBoxItem Content="Kendra" />
+                                <ComboBoxItem Content="Ivy" />
+                                <ComboBoxItem Content="Miguel" />
+                                <ComboBoxItem Content="Enrique" />
+                                <ComboBoxItem Content="Amy" />
+                                <ComboBoxItem Content="Russell" />
+                                <ComboBoxItem Content="Mia" />
+                                <ComboBoxItem Content="Zhiyu" />
+                                <ComboBoxItem Content="Mizuki" />
+                                <ComboBoxItem Content="Takumi" />
+                                <ComboBoxItem Content="Seoyeon" />
+                            </ComboBox>
+                            <TextBlock x:Name="txtPollyVoiceIdHint" Text="Example: Tatyana, Maxim, Joanna." Style="{StaticResource HintStyle}" />
+                        </StackPanel>
+
+                        <Button x:Name="btnTestTts" Content="TEST TTS" Style="{StaticResource TestTtsButtonStyle}" Click="BtnTestTts_Click" />
+                        <TextBlock x:Name="txtTtsTestHint" Text="Runs a direct voice test with the current provider settings." Style="{StaticResource HintStyle}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="{StaticResource GlassPanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="16">
+                    <StackPanel>
+                        <TextBlock x:Name="txtBehaviorSectionTitle" Text="BEHAVIOR" Style="{StaticResource SectionTitleStyle}" />
+
+                        <StackPanel Orientation="Horizontal" Margin="0,2,0,14">
+                            <CheckBox x:Name="chkStreaming" Content="Enable streaming reply" />
+                            <CheckBox x:Name="chkCommandMode" Content="Enable command mode" />
+                            <CheckBox x:Name="chkVoiceInputButton" Content="Enable voice input button" />
+                        </StackPanel>
+                        <Border Background="#F4FAFE"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Padding="12"
+                                Margin="0,-4,0,12">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, ElementName=chkCommandMode}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackPanel>
+                                <DockPanel LastChildFill="False">
+                                    <TextBlock x:Name="txtCommandModeTitle" Text="COMMAND MODE"
+                                               Foreground="{StaticResource HeadBrush}"
+                                               FontFamily="Bahnschrift SemiBold"
+                                               FontSize="13"
+                                               DockPanel.Dock="Left"
+                                               VerticalAlignment="Center" />
+                                    <Button x:Name="btnCommandInfo" Content="Info"
+                                            Width="70"
+                                            Height="28"
+                                            DockPanel.Dock="Right"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Click="BtnCommandInfo_Click" />
+                                </DockPanel>
+                                <TextBlock x:Name="txtCommandModeHint" Text="Use prefixes: /, !, cmd, command, команда, приказ"
+                                           Style="{StaticResource HintStyle}"
+                                           Margin="0,6,0,0" />
+                                <TextBlock x:Name="txtCommandExample1" Text="/займись учебой"
+                                           Foreground="{StaticResource TextBrush}"
+                                           FontFamily="Bahnschrift SemiBold"
+                                           FontSize="12"
+                                           Margin="0,8,0,0" />
+                                <TextBlock x:Name="txtCommandExample2" Text="/займись работой"
+                                           Foreground="{StaticResource TextBrush}"
+                                           FontFamily="Bahnschrift SemiBold"
+                                           FontSize="12"
+                                           Margin="0,4,0,0" />
+                                <TextBlock x:Name="txtCommandExample3" Text="!стоп"
+                                           Foreground="{StaticResource TextBrush}"
+                                           FontFamily="Bahnschrift SemiBold"
+                                           FontSize="12"
+                                           Margin="0,4,0,0" />
+                                <TextBlock x:Name="txtCommandExample4" Text="/займись учебой  ->  рисование"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           FontFamily="Bahnschrift"
+                                           FontSize="12"
+                                           Margin="0,8,0,0" />
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock x:Name="txtMaxTokensLabel" Text="Max Tokens" Style="{StaticResource FieldLabelStyle}" />
+                        <TextBox x:Name="txtMaxTokens" />
+
+                        <TextBlock x:Name="txtMaxHistoryLabel" Margin="0,16,0,4" Text="Max History Messages" Style="{StaticResource FieldLabelStyle}" />
+                        <TextBox x:Name="txtMaxHistory" />
+
+                        <TextBlock x:Name="txtSystemPromptLabel" Margin="0,16,0,4" Text="System Prompt" Style="{StaticResource FieldLabelStyle}" />
+                        <TextBox x:Name="txtSystemPrompt" Height="240" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+                        <TextBlock x:Name="txtSystemPromptHint" Text="This prompt defines tone, personality, limits, and roleplay style for Smart Lolis." Style="{StaticResource HintStyle}" />
+
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="2"
+                Margin="15,12,15,15"
+                Padding="12"
+                Background="{StaticResource GlassPanelBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="6">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="btnOpenConsole" Content="Open Console" Style="{StaticResource SuccessButtonStyle}" Click="BtnOpenConsole_Click" />
+                <Button x:Name="btnClearHistory" Content="Clear History" Style="{StaticResource DangerButtonStyle}" Click="BtnClearHistory_Click" />
+                <Button x:Name="btnSave" Content="Save" Style="{StaticResource PrimaryButtonStyle}" Click="BtnSave_Click" />
+                <Button x:Name="btnCancel" Content="Cancel" Style="{StaticResource SecondaryButtonStyle}" Margin="0" Click="BtnCancel_Click" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

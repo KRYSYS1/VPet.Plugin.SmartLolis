@@ -1,0 +1,21 @@
+# Build output
+artifacts/
+bin/
+obj/
+
+# Editor settings
+.vscode/
+.vs/
+
+# User-specific files
+*.user
+*.suo
+*.cache
+*.pdb
+
+# Local logs
+*.log
+
+# OS junk
+Thumbs.db
+Desktop.ini
