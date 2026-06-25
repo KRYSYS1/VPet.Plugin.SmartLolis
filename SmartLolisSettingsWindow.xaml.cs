@@ -1,11 +1,15 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Shapes;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using Newtonsoft.Json;
+using System.Windows.Input;
 
 namespace VPet.Plugin.SmartLolis
 {
@@ -63,6 +67,9 @@ namespace VPet.Plugin.SmartLolis
             ["Custom"] = Array.Empty<string>(),
         };
 
+        private SmartLolisSettings _snapshot;
+        private readonly Dictionary<string, bool> _passwordVisible = new();
+
         public SmartLolisSettingsWindow(SmartLolisPlugin plugin)
         {
             InitializeComponent();
@@ -70,6 +77,8 @@ namespace VPet.Plugin.SmartLolis
             InitProviderButtons();
             LoadLocalWindowsVoices();
             LoadSettings();
+            TakeSnapshot();
+            WireChangeTracking();
         }
 
         private void InitProviderButtons()
@@ -117,6 +126,10 @@ namespace VPet.Plugin.SmartLolis
             chkCommandMode.IsChecked = s.EnableCommandMode;
             chkVoiceInputButton.IsChecked = s.EnableVoiceInputButton;
             txtSystemPrompt.Text = s.SystemPrompt ?? string.Empty;
+            icoLlmApiKey.Data = EyeClosedGeo;
+            icoElevenLabsApiKey.Data = EyeClosedGeo;
+            icoGoogleApiKey.Data = EyeClosedGeo;
+            icoPollySecretKey.Data = EyeClosedGeo;
         }
 
         private void SnapshotCurrentLlmConfig()
@@ -198,6 +211,8 @@ namespace VPet.Plugin.SmartLolis
 
             _plugin.Save();
             _plugin.TalkBoxInstance?.RefreshUiFromSettings();
+            TakeSnapshot();
+            CheckDirty();
             ShowStatus("Settings saved.", StatusKind.Info);
         }
 
@@ -309,6 +324,7 @@ namespace VPet.Plugin.SmartLolis
                 _currentLlmProvider = provider;
                 _plugin.PluginSettings.LlmProvider = provider;
                 SelectLlmProvider(provider);
+                CheckDirty();
             }
         }
 
@@ -442,6 +458,7 @@ namespace VPet.Plugin.SmartLolis
                 _currentTtsProvider = provider;
                 _plugin.PluginSettings.TtsProvider = provider;
                 SelectTtsProvider(provider);
+                CheckDirty();
             }
         }
 
@@ -800,6 +817,194 @@ namespace VPet.Plugin.SmartLolis
             {
                 SmartLolisLog.Error("Failed to enumerate installed Windows voices.", ex);
             }
+        }
+
+        private static readonly Geometry EyeOpenGeo = Geometry.Parse(
+            "M 2,12 C 2,12 5.5,5 12,5 18.5,5 22,12 22,12 22,12 18.5,19 12,19 5.5,19 2,12 2,12 Z M 12,9 A 3,3 0 1,1 12,15 A 3,3 0 1,1 12,9 Z");
+
+        private static readonly Geometry EyeClosedGeo = Geometry.Parse(
+            "M 3,3 L 21,21 M 10.6,6.2 A 10.6,10.6 0 0,1 12,6 C 18.5,6 22,13 22,13 A 17,17 0 0,1 18.7,17 M 6.7,6.7 A 17,17 0 0,0 2,13 C 2,13 5.5,20 12,20 A 10.6,10.6 0 0,0 16.2,19.1 M 9.9,9.9 A 3,3 0 0,0 14.1,14.1");
+
+        private void BtnTogglePassword_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn || btn.Tag is not string tag) return;
+
+            PasswordBox pwdBox;
+            TextBox visibleBox;
+            Path icon;
+
+            switch (tag)
+            {
+                case "Llm":
+                    pwdBox = txtLlmApiKey; visibleBox = txtLlmApiKeyVisible; icon = icoLlmApiKey; break;
+                case "ElevenLabs":
+                    pwdBox = txtElevenLabsApiKey; visibleBox = txtElevenLabsApiKeyVisible; icon = icoElevenLabsApiKey; break;
+                case "Google":
+                    pwdBox = txtGoogleApiKey; visibleBox = txtGoogleApiKeyVisible; icon = icoGoogleApiKey; break;
+                case "PollySecret":
+                    pwdBox = txtPollySecretKey; visibleBox = txtPollySecretKeyVisible; icon = icoPollySecretKey; break;
+                default:
+                    return;
+            }
+
+            bool show = !_passwordVisible.GetValueOrDefault(tag, false);
+            _passwordVisible[tag] = show;
+
+            if (show)
+            {
+                visibleBox.Text = pwdBox.Password;
+                visibleBox.Visibility = Visibility.Visible;
+                pwdBox.Visibility = Visibility.Collapsed;
+                icon.Data = EyeOpenGeo;
+            }
+            else
+            {
+                pwdBox.Password = visibleBox.Text;
+                pwdBox.Visibility = Visibility.Visible;
+                visibleBox.Visibility = Visibility.Collapsed;
+                icon.Data = EyeClosedGeo;
+            }
+        }
+
+        private void PwdBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                BtnSave_Click(sender, e);
+            }
+        }
+
+        private void TakeSnapshot()
+        {
+            var s = _plugin.PluginSettings;
+            SnapshotCurrentLlmConfig();
+            _snapshot = JsonConvert.DeserializeObject<SmartLolisSettings>(
+                JsonConvert.SerializeObject(s));
+        }
+
+        private void WireChangeTracking()
+        {
+            txtLlmApiUrl.TextChanged += AnyChange;
+            txtLlmApiKey.PasswordChanged += AnyChange;
+            txtLlmApiKeyVisible.TextChanged += AnyChange;
+            cmbLlmModel.SelectionChanged += AnyChange;
+            txtElevenLabsApiKey.PasswordChanged += AnyChange;
+            txtElevenLabsApiKeyVisible.TextChanged += AnyChange;
+            cmbElevenLabsVoiceId.SelectionChanged += AnyChange;
+            cmbElevenLabsVoiceId.KeyUp += AnyChange;
+            txtGoogleApiKey.PasswordChanged += AnyChange;
+            txtGoogleApiKeyVisible.TextChanged += AnyChange;
+            cmbGoogleVoiceName.SelectionChanged += AnyChange;
+            cmbGoogleVoiceName.KeyUp += AnyChange;
+            cmbLocalWindowsVoiceName.SelectionChanged += AnyChange;
+            cmbLocalWindowsVoiceName.KeyUp += AnyChange;
+            txtPollyAccessKey.TextChanged += AnyChange;
+            txtPollySecretKey.PasswordChanged += AnyChange;
+            txtPollySecretKeyVisible.TextChanged += AnyChange;
+            cmbPollyRegion.SelectionChanged += AnyChange;
+            cmbPollyVoiceId.SelectionChanged += AnyChange;
+            cmbPollyVoiceId.KeyUp += AnyChange;
+            cmbUiLanguage.SelectionChanged += AnyChange;
+            txtMaxTokens.TextChanged += AnyChange;
+            txtMaxHistory.TextChanged += AnyChange;
+            txtSystemPrompt.TextChanged += AnyChange;
+            chkLlm.Checked += AnyChange;
+            chkLlm.Unchecked += AnyChange;
+            chkTts.Checked += AnyChange;
+            chkTts.Unchecked += AnyChange;
+            chkStreaming.Checked += AnyChange;
+            chkStreaming.Unchecked += AnyChange;
+            chkCommandMode.Checked += AnyChange;
+            chkCommandMode.Unchecked += AnyChange;
+            chkVoiceInputButton.Checked += AnyChange;
+            chkVoiceInputButton.Unchecked += AnyChange;
+            btnSave.Style = (Style)FindResource("SecondaryButtonStyle");
+        }
+
+        private void AnyChange(object sender, EventArgs e)
+        {
+            CheckDirty();
+        }
+
+        private string GetLlmPasswordText()
+        {
+            string tag = "Llm";
+            if (_passwordVisible.GetValueOrDefault(tag, false))
+                return txtLlmApiKeyVisible.Text;
+            return txtLlmApiKey.Password;
+        }
+
+        private string GetElevenLabsPasswordText()
+        {
+            string tag = "ElevenLabs";
+            if (_passwordVisible.GetValueOrDefault(tag, false))
+                return txtElevenLabsApiKeyVisible.Text;
+            return txtElevenLabsApiKey.Password;
+        }
+
+        private string GetGooglePasswordText()
+        {
+            string tag = "Google";
+            if (_passwordVisible.GetValueOrDefault(tag, false))
+                return txtGoogleApiKeyVisible.Text;
+            return txtGoogleApiKey.Password;
+        }
+
+        private string GetPollySecretPasswordText()
+        {
+            string tag = "PollySecret";
+            if (_passwordVisible.GetValueOrDefault(tag, false))
+                return txtPollySecretKeyVisible.Text;
+            return txtPollySecretKey.Password;
+        }
+
+        private void CheckDirty()
+        {
+            var sn = _snapshot;
+            if (sn == null) return;
+
+            bool dirty = false;
+
+            dirty |= !string.Equals(_currentLlmProvider, sn.LlmProvider, StringComparison.OrdinalIgnoreCase);
+            dirty |= !string.Equals(_currentTtsProvider, sn.TtsProvider, StringComparison.OrdinalIgnoreCase);
+            dirty |= !string.Equals(GetUiLanguageFromSnapshot(), sn.UiLanguage, StringComparison.OrdinalIgnoreCase);
+            dirty |= !string.Equals(txtMaxTokens.Text, (sn.MaxTokens > 0 ? sn.MaxTokens : 512).ToString());
+            dirty |= !string.Equals(txtMaxHistory.Text, (sn.MaxHistoryMessages > 0 ? sn.MaxHistoryMessages : 16).ToString());
+            dirty |= !string.Equals(txtSystemPrompt.Text ?? "", sn.SystemPrompt ?? "");
+            dirty |= (chkLlm.IsChecked ?? true) != sn.EnableLlm;
+            dirty |= (chkStreaming.IsChecked ?? true) != sn.EnableStreaming;
+            dirty |= (chkTts.IsChecked ?? true) != sn.EnableTts;
+            dirty |= (chkCommandMode.IsChecked ?? true) != sn.EnableCommandMode;
+            dirty |= (chkVoiceInputButton.IsChecked ?? true) != sn.EnableVoiceInputButton;
+
+            dirty |= !string.Equals(cmbElevenLabsVoiceId.Text ?? "", sn.ElevenLabsVoiceId ?? "");
+            dirty |= !string.Equals(GetElevenLabsPasswordText(), sn.ElevenLabsApiKey ?? "");
+            dirty |= !string.Equals(cmbGoogleVoiceName.Text ?? "", sn.GoogleVoiceName ?? "");
+            dirty |= !string.Equals(GetGooglePasswordText(), sn.GoogleApiKey ?? "");
+            dirty |= !string.Equals(cmbLocalWindowsVoiceName.Text ?? "", sn.LocalWindowsVoiceName ?? "");
+            dirty |= !string.Equals(txtPollyAccessKey.Text ?? "", sn.PollyAccessKey ?? "");
+            dirty |= !string.Equals(GetPollySecretPasswordText(), sn.PollySecretKey ?? "");
+            dirty |= !string.Equals(cmbPollyRegion.Text ?? "", sn.PollyRegion ?? "");
+            dirty |= !string.Equals(cmbPollyVoiceId.Text ?? "", sn.PollyVoiceId ?? "");
+
+            if (!dirty && sn.LlmProviderConfigs.TryGetValue(_currentLlmProvider, out var snConfig))
+            {
+                dirty |= !string.Equals(txtLlmApiUrl.Text ?? "", snConfig.ApiUrl ?? "");
+                dirty |= !string.Equals(GetLlmPasswordText(), snConfig.ApiKey ?? "");
+                dirty |= !string.Equals(cmbLlmModel.Text ?? "", snConfig.Model ?? "");
+            }
+
+            btnSave.Style = dirty
+                ? (Style)FindResource("PrimaryButtonStyle")
+                : (Style)FindResource("SecondaryButtonStyle");
+        }
+
+        private string GetUiLanguageFromSnapshot()
+        {
+            if (cmbUiLanguage.SelectedItem is ComboBoxItem item && item.Tag is string tag)
+                return tag;
+            return _currentUiLanguage;
         }
 
         private void ShowStatus(string message, StatusKind kind)
