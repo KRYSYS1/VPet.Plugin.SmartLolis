@@ -1,4 +1,4 @@
-﻿<Window x:Class="VPet.Plugin.SmartLolis.SmartLolisSettingsWindow"
+<Window x:Class="VPet.Plugin.SmartLolis.SmartLolisSettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Smart Lolis Settings"
@@ -572,7 +572,13 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <TextBlock x:Name="txtLlmApiKeyLabel" Margin="0,0,0,4" Text="API Key" Style="{StaticResource FieldLabelStyle}" />
-                                    <PasswordBox x:Name="txtLlmApiKey" />
+                                    <Grid>
+                                        <PasswordBox x:Name="txtLlmApiKey" KeyDown="PwdBox_KeyDown" />
+                                        <TextBox x:Name="txtLlmApiKeyVisible" Visibility="Collapsed" KeyDown="PwdBox_KeyDown" />
+                                        <Button x:Name="btnToggleLlmApiKey" Tag="Llm" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0" Width="28" Height="28" Padding="0" Background="Transparent" BorderThickness="0" Focusable="False" Click="BtnTogglePassword_Click" Cursor="Hand">
+                                            <Path x:Name="icoLlmApiKey" Stretch="Uniform" Stroke="{StaticResource MutedBrush}" StrokeThickness="1.6" Fill="Transparent" StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" Width="16" Height="16" />
+                                        </Button>
+                                    </Grid>
                                 </StackPanel>
                                 <Button x:Name="btnGetApiKey" Grid.Column="1" Margin="8,18,0,0" Content="Get Key" Style="{StaticResource AzureButtonStyle}" MinWidth="110" Width="Auto" Height="32" Padding="10,4" Click="BtnGetApiKey_Click" />
                             </Grid>
@@ -616,7 +622,13 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <TextBlock x:Name="txtElevenLabsApiKeyLabel" Margin="0,0,0,4" Text="ElevenLabs API Key" Style="{StaticResource FieldLabelStyle}" />
-                                    <PasswordBox x:Name="txtElevenLabsApiKey" />
+                                    <Grid>
+                                        <PasswordBox x:Name="txtElevenLabsApiKey" KeyDown="PwdBox_KeyDown" />
+                                        <TextBox x:Name="txtElevenLabsApiKeyVisible" Visibility="Collapsed" KeyDown="PwdBox_KeyDown" />
+                                        <Button x:Name="btnToggleElevenLabsApiKey" Tag="ElevenLabs" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0" Width="28" Height="28" Padding="0" Background="Transparent" BorderThickness="0" Focusable="False" Click="BtnTogglePassword_Click" Cursor="Hand">
+                                            <Path x:Name="icoElevenLabsApiKey" Stretch="Uniform" Stroke="{StaticResource MutedBrush}" StrokeThickness="1.6" Fill="Transparent" StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" Width="16" Height="16" />
+                                        </Button>
+                                    </Grid>
                                 </StackPanel>
                                 <Button x:Name="btnGetElevenLabsKey" Grid.Column="1" Margin="8,18,0,0" Content="Get Key" Style="{StaticResource AzureButtonStyle}" MinWidth="110" Width="Auto" Height="32" Padding="10,4" Click="BtnGetTtsApiKey_Click" Tag="ElevenLabs" />
                             </Grid>
@@ -648,7 +660,13 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <TextBlock x:Name="txtGoogleApiKeyLabel" Margin="0,0,0,4" Text="Google API Key" Style="{StaticResource FieldLabelStyle}" />
-                                    <PasswordBox x:Name="txtGoogleApiKey" />
+                                    <Grid>
+                                        <PasswordBox x:Name="txtGoogleApiKey" KeyDown="PwdBox_KeyDown" />
+                                        <TextBox x:Name="txtGoogleApiKeyVisible" Visibility="Collapsed" KeyDown="PwdBox_KeyDown" />
+                                        <Button x:Name="btnToggleGoogleApiKey" Tag="Google" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0" Width="28" Height="28" Padding="0" Background="Transparent" BorderThickness="0" Focusable="False" Click="BtnTogglePassword_Click" Cursor="Hand">
+                                            <Path x:Name="icoGoogleApiKey" Stretch="Uniform" Stroke="{StaticResource MutedBrush}" StrokeThickness="1.6" Fill="Transparent" StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" Width="16" Height="16" />
+                                        </Button>
+                                    </Grid>
                                 </StackPanel>
                                 <Button x:Name="btnGetGoogleKey" Grid.Column="1" Margin="8,18,0,0" Content="Get Key" Style="{StaticResource AzureButtonStyle}" MinWidth="110" Width="Auto" Height="32" Padding="10,4" Click="BtnGetTtsApiKey_Click" Tag="Google" />
                             </Grid>
@@ -710,7 +728,13 @@
                             <TextBlock x:Name="txtPollyAccessKeyHint" Text="AWS access key for Amazon Polly." Style="{StaticResource HintStyle}" />
 
                             <TextBlock x:Name="txtPollySecretKeyLabel" Margin="0,16,0,4" Text="Polly Secret Key" Style="{StaticResource FieldLabelStyle}" />
-                            <PasswordBox x:Name="txtPollySecretKey" />
+                            <Grid>
+                                <PasswordBox x:Name="txtPollySecretKey" KeyDown="PwdBox_KeyDown" />
+                                <TextBox x:Name="txtPollySecretKeyVisible" Visibility="Collapsed" KeyDown="PwdBox_KeyDown" />
+                                <Button x:Name="btnTogglePollySecretKey" Tag="PollySecret" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0" Width="28" Height="28" Padding="0" Background="Transparent" BorderThickness="0" Focusable="False" Click="BtnTogglePassword_Click" Cursor="Hand">
+                                    <Path x:Name="icoPollySecretKey" Stretch="Uniform" Stroke="{StaticResource MutedBrush}" StrokeThickness="1.6" Fill="Transparent" StrokeLineJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" Width="16" Height="16" />
+                                </Button>
+                            </Grid>
 
                             <TextBlock x:Name="txtPollyRegionLabel" Margin="0,16,0,4" Text="Polly Region" Style="{StaticResource FieldLabelStyle}" />
                             <ComboBox x:Name="cmbPollyRegion">
