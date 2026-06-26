@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -69,13 +69,10 @@ namespace VPet.Plugin.SmartLolis
                 return;
             }
 
-            bool useOpenRouter = string.Equals(_plugin.PluginSettings.LlmProvider, "OpenRouter", StringComparison.OrdinalIgnoreCase);
-            string llmApiKey = useOpenRouter ? _plugin.PluginSettings.OpenRouterApiKey : _plugin.PluginSettings.GroqApiKey;
-            if (string.IsNullOrWhiteSpace(llmApiKey))
+            var llmConfig = _plugin.PluginSettings.GetActiveLlmConfig();
+            if (string.IsNullOrWhiteSpace(llmConfig.ApiKey))
             {
-                DisplayThinkToSayRnd(useOpenRouter
-                    ? "Set your OpenRouter API key in Smart Lolis Settings first."
-                    : "Set your Groq API key in Smart Lolis Settings first.");
+                DisplayThinkToSayRnd($"Set your {_plugin.PluginSettings.LlmProvider ?? "LLM"} API key in Smart Lolis Settings first.");
                 return;
             }
 
