@@ -109,12 +109,15 @@ namespace VPet.Plugin.SmartLolis
             SelectLlmProvider(string.IsNullOrWhiteSpace(s.LlmProvider) ? "Groq" : s.LlmProvider);
             SelectTtsProvider(string.IsNullOrWhiteSpace(s.TtsProvider) ? "ElevenLabs" : s.TtsProvider);
             txtElevenLabsApiKey.Password = s.ElevenLabsApiKey ?? string.Empty;
+            txtElevenLabsApiKeyVisible.Text = s.ElevenLabsApiKey ?? string.Empty;
             cmbElevenLabsVoiceId.Text = s.ElevenLabsVoiceId ?? string.Empty;
             txtGoogleApiKey.Password = s.GoogleApiKey ?? string.Empty;
+            txtGoogleApiKeyVisible.Text = s.GoogleApiKey ?? string.Empty;
             cmbGoogleVoiceName.Text = string.IsNullOrWhiteSpace(s.GoogleVoiceName) ? "ru-RU-Standard-A" : s.GoogleVoiceName;
             cmbLocalWindowsVoiceName.Text = s.LocalWindowsVoiceName ?? string.Empty;
             txtPollyAccessKey.Text = s.PollyAccessKey ?? string.Empty;
             txtPollySecretKey.Password = s.PollySecretKey ?? string.Empty;
+            txtPollySecretKeyVisible.Text = s.PollySecretKey ?? string.Empty;
             cmbPollyRegion.Text = string.IsNullOrWhiteSpace(s.PollyRegion) ? "us-east-1" : s.PollyRegion;
             cmbPollyVoiceId.Text = string.IsNullOrWhiteSpace(s.PollyVoiceId) ? "Tatyana" : s.PollyVoiceId;
             SelectUiLanguage(string.IsNullOrWhiteSpace(s.UiLanguage) ? "ru" : s.UiLanguage);
@@ -136,12 +139,14 @@ namespace VPet.Plugin.SmartLolis
         {
             var s = _plugin.PluginSettings;
             s.EnsureDefaults();
-            if (s.LlmProviderConfigs.TryGetValue(_currentLlmProvider, out var config))
+            if (!s.LlmProviderConfigs.TryGetValue(_currentLlmProvider, out var config))
             {
-                config.ApiUrl = txtLlmApiUrl.Text ?? "";
-                config.ApiKey = txtLlmApiKey.Password ?? "";
-                config.Model = cmbLlmModel.Text ?? "";
+                config = new LlmProviderConfig();
+                s.LlmProviderConfigs[_currentLlmProvider] = config;
             }
+            config.ApiUrl = txtLlmApiUrl.Text ?? "";
+            config.ApiKey = GetLlmPasswordText();
+            config.Model = cmbLlmModel.Text ?? "";
         }
 
         private void LoadLlmProviderConfig(string provider)
@@ -149,10 +154,14 @@ namespace VPet.Plugin.SmartLolis
             var s = _plugin.PluginSettings;
             s.EnsureDefaults();
             if (!s.LlmProviderConfigs.TryGetValue(provider, out var config))
-                config = s.LlmProviderConfigs["Groq"];
+            {
+                config = new LlmProviderConfig();
+                s.LlmProviderConfigs[provider] = config;
+            }
 
             txtLlmApiUrl.Text = config.ApiUrl ?? "";
             txtLlmApiKey.Password = config.ApiKey ?? "";
+            txtLlmApiKeyVisible.Text = config.ApiKey ?? "";
             cmbLlmModel.Text = config.Model ?? "";
 
             bool isCustom = string.Equals(provider, "Custom", StringComparison.OrdinalIgnoreCase);
@@ -186,13 +195,13 @@ namespace VPet.Plugin.SmartLolis
             SnapshotCurrentLlmConfig();
             s.LlmProvider = GetSelectedLlmProvider();
             s.TtsProvider = GetSelectedTtsProvider();
-            s.ElevenLabsApiKey = txtElevenLabsApiKey.Password;
+            s.ElevenLabsApiKey = GetElevenLabsPasswordText();
             s.ElevenLabsVoiceId = cmbElevenLabsVoiceId.Text;
-            s.GoogleApiKey = txtGoogleApiKey.Password;
+            s.GoogleApiKey = GetGooglePasswordText();
             s.GoogleVoiceName = cmbGoogleVoiceName.Text;
             s.LocalWindowsVoiceName = cmbLocalWindowsVoiceName.Text;
             s.PollyAccessKey = txtPollyAccessKey.Text;
-            s.PollySecretKey = txtPollySecretKey.Password;
+            s.PollySecretKey = GetPollySecretPasswordText();
             s.PollyRegion = cmbPollyRegion.Text;
             s.PollyVoiceId = cmbPollyVoiceId.Text;
             s.UiLanguage = GetSelectedUiLanguage();
@@ -243,13 +252,13 @@ namespace VPet.Plugin.SmartLolis
             SnapshotCurrentLlmConfig();
             s.LlmProvider = GetSelectedLlmProvider();
             s.TtsProvider = GetSelectedTtsProvider();
-            s.ElevenLabsApiKey = txtElevenLabsApiKey.Password;
+            s.ElevenLabsApiKey = GetElevenLabsPasswordText();
             s.ElevenLabsVoiceId = cmbElevenLabsVoiceId.Text;
-            s.GoogleApiKey = txtGoogleApiKey.Password;
+            s.GoogleApiKey = GetGooglePasswordText();
             s.GoogleVoiceName = cmbGoogleVoiceName.Text;
             s.LocalWindowsVoiceName = cmbLocalWindowsVoiceName.Text;
             s.PollyAccessKey = txtPollyAccessKey.Text;
-            s.PollySecretKey = txtPollySecretKey.Password;
+            s.PollySecretKey = GetPollySecretPasswordText();
             s.PollyRegion = cmbPollyRegion.Text;
             s.PollyVoiceId = cmbPollyVoiceId.Text;
             s.UiLanguage = GetSelectedUiLanguage();
