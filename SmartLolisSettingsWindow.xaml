@@ -310,7 +310,7 @@
         </Style>
 
         <Style x:Key="CalendarButtonBaseStyle" TargetType="Button">
-            <Setter Property="Width" Value="136" />
+            <Setter Property="Width" Value="131" />
             <Setter Property="Height" Value="38" />
             <Setter Property="Margin" Value="0,0,8,0" />
             <Setter Property="Foreground" Value="#2A5975" />
@@ -776,10 +776,15 @@
                     <StackPanel>
                         <TextBlock x:Name="txtBehaviorSectionTitle" Text="BEHAVIOR" Style="{StaticResource SectionTitleStyle}" />
 
-                        <StackPanel Orientation="Horizontal" Margin="0,2,0,14">
-                            <CheckBox x:Name="chkStreaming" Content="Enable streaming reply" />
-                            <CheckBox x:Name="chkCommandMode" Content="Enable command mode" />
-                            <CheckBox x:Name="chkVoiceInputButton" Content="Enable voice input button" />
+                        <StackPanel Margin="0,2,0,14">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                <CheckBox x:Name="chkStreaming" Content="Enable streaming reply" />
+                                <CheckBox x:Name="chkCommandMode" Content="Enable command mode" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox x:Name="chkVoiceInputButton" Content="Enable voice input button" />
+                                <CheckBox x:Name="chkAutoMemoryCompression" Content="Auto memory compression" />
+                            </StackPanel>
                         </StackPanel>
                         <Border Background="#F4FAFE"
                                 BorderBrush="{StaticResource BorderBrush}"
@@ -837,10 +842,19 @@
                                            FontFamily="Bahnschrift"
                                            FontSize="12"
                                            Margin="0,8,0,0" />
-                            </StackPanel>
-                        </Border>
+                             </StackPanel>
+                         </Border>
 
-                        <TextBlock x:Name="txtMaxTokensLabel" Text="Max Tokens" Style="{StaticResource FieldLabelStyle}" />
+                        <StackPanel x:Name="panelMemoryCompression" Margin="0,0,0,12" Visibility="Collapsed">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="txtCompressionThresholdLabel" Text="Compression threshold" Foreground="{StaticResource HeadBrush}" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                <TextBox x:Name="txtCompressionThreshold" Width="60" Height="30" Text="24" Margin="0,0,8,0" />
+                                <TextBlock x:Name="txtCompressionThresholdHint" Text="messages before auto-compress" Foreground="{StaticResource MutedBrush}" FontSize="11" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <TextBlock x:Name="txtCompressionThresholdInfo" Text="Should be higher than Max History Messages by +4. Older messages get compressed into a summary that stays in the system prompt." Style="{StaticResource HintStyle}" />
+                        </StackPanel>
+
+                         <TextBlock x:Name="txtMaxTokensLabel" Text="Max Tokens" Style="{StaticResource FieldLabelStyle}" />
                         <TextBox x:Name="txtMaxTokens" />
 
                         <TextBlock x:Name="txtMaxHistoryLabel" Margin="0,16,0,4" Text="Max History Messages" Style="{StaticResource FieldLabelStyle}" />
@@ -864,6 +878,7 @@
                 CornerRadius="6">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="btnOpenConsole" Content="Open Console" Style="{StaticResource SuccessButtonStyle}" Click="BtnOpenConsole_Click" />
+                <Button x:Name="btnChatHistory" Content="Chat History" Style="{StaticResource PurpleButtonStyle}" Click="BtnChatHistory_Click" />
                 <Button x:Name="btnClearHistory" Content="Clear History" Style="{StaticResource DangerButtonStyle}" Click="BtnClearHistory_Click" />
                 <Button x:Name="btnSave" Content="Save" Style="{StaticResource PrimaryButtonStyle}" Click="BtnSave_Click" />
                 <Button x:Name="btnCancel" Content="Cancel" Style="{StaticResource SecondaryButtonStyle}" Margin="0" Click="BtnCancel_Click" />
