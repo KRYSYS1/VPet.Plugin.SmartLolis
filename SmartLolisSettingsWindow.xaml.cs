@@ -122,12 +122,15 @@ namespace VPet.Plugin.SmartLolis
             cmbPollyVoiceId.Text = string.IsNullOrWhiteSpace(s.PollyVoiceId) ? "Tatyana" : s.PollyVoiceId;
             SelectUiLanguage(string.IsNullOrWhiteSpace(s.UiLanguage) ? "ru" : s.UiLanguage);
             txtMaxTokens.Text = (s.MaxTokens > 0 ? s.MaxTokens : 512).ToString();
-            txtMaxHistory.Text = (s.MaxHistoryMessages > 0 ? s.MaxHistoryMessages : 16).ToString();
+            txtMaxHistory.Text = (s.MaxHistoryMessages > 0 ? s.MaxHistoryMessages : 20).ToString();
             chkLlm.IsChecked = s.EnableLlm;
             chkStreaming.IsChecked = s.EnableStreaming;
             chkTts.IsChecked = s.EnableTts;
             chkCommandMode.IsChecked = s.EnableCommandMode;
             chkVoiceInputButton.IsChecked = s.EnableVoiceInputButton;
+            chkAutoMemoryCompression.IsChecked = s.EnableAutoMemoryCompression;
+            txtCompressionThreshold.Text = (s.MemoryCompressionThreshold > 0 ? s.MemoryCompressionThreshold : 24).ToString();
+            UpdateMemoryCompressionVisibility();
             txtSystemPrompt.Text = s.SystemPrompt ?? string.Empty;
             icoLlmApiKey.Data = EyeClosedGeo;
             icoElevenLabsApiKey.Data = EyeClosedGeo;
@@ -210,6 +213,11 @@ namespace VPet.Plugin.SmartLolis
             s.EnableTts = chkTts.IsChecked ?? true;
             s.EnableCommandMode = chkCommandMode.IsChecked ?? true;
             s.EnableVoiceInputButton = chkVoiceInputButton.IsChecked ?? true;
+            s.EnableAutoMemoryCompression = chkAutoMemoryCompression.IsChecked ?? false;
+
+            if (int.TryParse(txtCompressionThreshold.Text, out int threshold) && threshold > 0)
+                s.MemoryCompressionThreshold = threshold;
+
             s.SystemPrompt = txtSystemPrompt.Text;
 
             if (int.TryParse(txtMaxTokens.Text, out int maxTokens) && maxTokens > 0)
@@ -238,12 +246,24 @@ namespace VPet.Plugin.SmartLolis
 
         private void BtnOpenConsole_Click(object sender, RoutedEventArgs e)
         {
-            new SmartLolisLogWindow().Show();
+            _plugin.ShowLogWindow();
+        }
+
+        private void BtnChatHistory_Click(object sender, RoutedEventArgs e)
+        {
+            _plugin.ShowChatHistoryWindow(GetSelectedUiLanguage());
+        }
+
+        private void UpdateMemoryCompressionVisibility()
+        {
+            panelMemoryCompression.Visibility = (chkAutoMemoryCompression.IsChecked ?? false)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
 
         private void BtnCommandInfo_Click(object sender, RoutedEventArgs e)
         {
-            new SmartLolisCommandInfoWindow(GetSelectedUiLanguage()).Show();
+            _plugin.ShowCommandInfoWindow(GetSelectedUiLanguage());
         }
 
         private void ApplyFormToSettings()
@@ -267,6 +287,11 @@ namespace VPet.Plugin.SmartLolis
             s.EnableTts = chkTts.IsChecked ?? true;
             s.EnableCommandMode = chkCommandMode.IsChecked ?? true;
             s.EnableVoiceInputButton = chkVoiceInputButton.IsChecked ?? true;
+            s.EnableAutoMemoryCompression = chkAutoMemoryCompression.IsChecked ?? false;
+
+            if (int.TryParse(txtCompressionThreshold.Text, out int threshold) && threshold > 0)
+                s.MemoryCompressionThreshold = threshold;
+
             s.SystemPrompt = txtSystemPrompt.Text;
 
             if (int.TryParse(txtMaxTokens.Text, out int maxTokens) && maxTokens > 0)
@@ -594,6 +619,10 @@ namespace VPet.Plugin.SmartLolis
             chkStreaming.Content = text["streaming_toggle"];
             chkCommandMode.Content = text["command_mode_toggle"];
             chkVoiceInputButton.Content = text["voice_input_toggle"];
+            chkAutoMemoryCompression.Content = text["auto_memory_compression_toggle"];
+            txtCompressionThresholdLabel.Text = text["compression_threshold_label"];
+            txtCompressionThresholdHint.Text = text["compression_threshold_hint"];
+            txtCompressionThresholdInfo.Text = text["compression_threshold_info"];
             txtCommandModeTitle.Text = text["command_mode_title"];
             btnCommandInfo.Content = text["info_button"];
             txtCommandModeHint.Text = text["command_mode_hint"];
@@ -606,6 +635,7 @@ namespace VPet.Plugin.SmartLolis
             txtSystemPromptLabel.Text = text["system_prompt_label"];
             txtSystemPromptHint.Text = text["system_prompt_hint"];
             btnOpenConsole.Content = text["open_console"];
+            btnChatHistory.Content = text["chat_history"];
             btnClearHistory.Content = text["clear_history"];
             btnSave.Content = text["save"];
             btnCancel.Content = text["cancel"];
@@ -658,6 +688,10 @@ namespace VPet.Plugin.SmartLolis
             ["streaming_toggle"] = "Потоковый ответ",
             ["command_mode_toggle"] = "Командный режим",
             ["voice_input_toggle"] = "Кнопка голосового ввода",
+            ["auto_memory_compression_toggle"] = "Автосжатие памяти",
+            ["compression_threshold_label"] = "Порог сжатия",
+            ["compression_threshold_hint"] = "сообщений перед автосжатием",
+            ["compression_threshold_info"] = "Должен быть выше макс. истории сообщений на +4. Старые сообщения сжимаются в сводку, которая остаётся в системном промпте.",
             ["command_mode_title"] = "КОМАНДНЫЙ РЕЖИМ",
             ["info_button"] = "Инфо",
             ["command_mode_hint"] = "Можно писать и свободнее: `займись учебой`, `может, поработаешь?`, `купи воды`, `отмена`. Префиксы тоже работают: /, !, cmd, command, команда, приказ.",
@@ -671,6 +705,7 @@ namespace VPet.Plugin.SmartLolis
             ["system_prompt_hint"] = "Этот промпт задаёт тон, характер, ограничения и стиль роли Smart Lolis.",
             ["open_console"] = "Открыть консоль",
             ["clear_history"] = "Очистить историю",
+            ["chat_history"] = "История чата",
             ["save"] = "Сохранить",
             ["cancel"] = "Отмена"
         };
@@ -720,6 +755,10 @@ namespace VPet.Plugin.SmartLolis
             ["streaming_toggle"] = "Enable streaming reply",
             ["command_mode_toggle"] = "Enable command mode",
             ["voice_input_toggle"] = "Enable voice input button",
+            ["auto_memory_compression_toggle"] = "Auto memory compression",
+            ["compression_threshold_label"] = "Compression threshold",
+            ["compression_threshold_hint"] = "messages before auto-compress",
+            ["compression_threshold_info"] = "Should be higher than Max History Messages by +4. Older messages get compressed into a summary that stays in the system prompt.",
             ["command_mode_title"] = "COMMAND MODE",
             ["info_button"] = "Info",
             ["command_mode_hint"] = "You can phrase commands naturally: `start studying`, `maybe go work`, `buy some water`, `cancel`. Prefixes still work: /, !, cmd, command.",
@@ -733,6 +772,7 @@ namespace VPet.Plugin.SmartLolis
             ["system_prompt_hint"] = "This prompt defines tone, personality, limits, and roleplay style for Smart Lolis.",
             ["open_console"] = "Open Console",
             ["clear_history"] = "Clear History",
+            ["chat_history"] = "Chat History",
             ["save"] = "Save",
             ["cancel"] = "Cancel"
         };
@@ -782,6 +822,10 @@ namespace VPet.Plugin.SmartLolis
             ["streaming_toggle"] = "启用流式回复",
             ["command_mode_toggle"] = "启用命令模式",
             ["voice_input_toggle"] = "启用语音输入按钮",
+            ["auto_memory_compression_toggle"] = "自动压缩记忆",
+            ["compression_threshold_label"] = "压缩阈值",
+            ["compression_threshold_hint"] = "条消息后自动压缩",
+            ["compression_threshold_info"] = "应高于最大历史消息数+4。旧消息会被压缩为摘要，保留在系统提示中。",
             ["command_mode_title"] = "命令模式",
             ["info_button"] = "说明",
             ["command_mode_hint"] = "也可以用更自然的说法：`去学习`、`去工作一下吧`、`买点水`、`取消`。前缀也支持：/, !, cmd, command。",
@@ -795,6 +839,7 @@ namespace VPet.Plugin.SmartLolis
             ["system_prompt_hint"] = "这个提示词定义 Smart Lolis 的语气、个性、限制与角色风格。",
             ["open_console"] = "打开控制台",
             ["clear_history"] = "清空历史",
+            ["chat_history"] = "聊天记录",
             ["save"] = "保存",
             ["cancel"] = "取消"
         };
@@ -928,6 +973,11 @@ namespace VPet.Plugin.SmartLolis
             chkCommandMode.Unchecked += AnyChange;
             chkVoiceInputButton.Checked += AnyChange;
             chkVoiceInputButton.Unchecked += AnyChange;
+            chkAutoMemoryCompression.Checked += AnyChange;
+            chkAutoMemoryCompression.Unchecked += AnyChange;
+            chkAutoMemoryCompression.Checked += (_, _) => UpdateMemoryCompressionVisibility();
+            chkAutoMemoryCompression.Unchecked += (_, _) => UpdateMemoryCompressionVisibility();
+            txtCompressionThreshold.TextChanged += AnyChange;
             btnSave.Style = (Style)FindResource("SecondaryButtonStyle");
         }
 
@@ -979,13 +1029,15 @@ namespace VPet.Plugin.SmartLolis
             dirty |= !string.Equals(_currentTtsProvider, sn.TtsProvider, StringComparison.OrdinalIgnoreCase);
             dirty |= !string.Equals(GetUiLanguageFromSnapshot(), sn.UiLanguage, StringComparison.OrdinalIgnoreCase);
             dirty |= !string.Equals(txtMaxTokens.Text, (sn.MaxTokens > 0 ? sn.MaxTokens : 512).ToString());
-            dirty |= !string.Equals(txtMaxHistory.Text, (sn.MaxHistoryMessages > 0 ? sn.MaxHistoryMessages : 16).ToString());
+            dirty |= !string.Equals(txtMaxHistory.Text, (sn.MaxHistoryMessages > 0 ? sn.MaxHistoryMessages : 20).ToString());
             dirty |= !string.Equals(txtSystemPrompt.Text ?? "", sn.SystemPrompt ?? "");
             dirty |= (chkLlm.IsChecked ?? true) != sn.EnableLlm;
             dirty |= (chkStreaming.IsChecked ?? true) != sn.EnableStreaming;
             dirty |= (chkTts.IsChecked ?? true) != sn.EnableTts;
             dirty |= (chkCommandMode.IsChecked ?? true) != sn.EnableCommandMode;
             dirty |= (chkVoiceInputButton.IsChecked ?? true) != sn.EnableVoiceInputButton;
+            dirty |= (chkAutoMemoryCompression.IsChecked ?? false) != sn.EnableAutoMemoryCompression;
+            dirty |= !string.Equals(txtCompressionThreshold.Text, (sn.MemoryCompressionThreshold > 0 ? sn.MemoryCompressionThreshold : 24).ToString());
 
             dirty |= !string.Equals(cmbElevenLabsVoiceId.Text ?? "", sn.ElevenLabsVoiceId ?? "");
             dirty |= !string.Equals(GetElevenLabsPasswordText(), sn.ElevenLabsApiKey ?? "");
