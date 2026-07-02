@@ -38,12 +38,14 @@ namespace VPet.Plugin.SmartLolis
         public string UiLanguage { get; set; } = "en";
         public string SystemPrompt { get; set; } = "You are Smart Lolis, a cute and clever desktop companion. Reply briefly, warmly, and with personality.";
         public int MaxTokens { get; set; } = 512;
-        public int MaxHistoryMessages { get; set; } = 16;
+        public int MaxHistoryMessages { get; set; } = 20;
         public bool EnableLlm { get; set; } = true;
         public bool EnableStreaming { get; set; } = true;
         public bool EnableTts { get; set; } = true;
         public bool EnableCommandMode { get; set; } = true;
         public bool EnableVoiceInputButton { get; set; } = true;
+        public bool EnableAutoMemoryCompression { get; set; } = true;
+        public int MemoryCompressionThreshold { get; set; } = 24;
 
         private static string GetSettingsPath(MainPlugin plugin)
         {
