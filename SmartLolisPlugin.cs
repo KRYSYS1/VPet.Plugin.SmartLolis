@@ -15,6 +15,11 @@ namespace VPet.Plugin.SmartLolis
         internal SmartLolisVoiceOverlayManager VoiceOverlayManager { get; private set; }
         private Action<SayInfo> _globalSayHook;
 
+        private SmartLolisSettingsWindow _settingsWindow;
+        private SmartLolisChatHistoryWindow _chatHistoryWindow;
+        private SmartLolisCommandInfoWindow _commandInfoWindow;
+        private SmartLolisLogWindow _logWindow;
+
         public override string PluginName => "SmartLolis";
 
         public SmartLolisPlugin(IMainWindow mainwin) : base(mainwin)
@@ -25,6 +30,7 @@ namespace VPet.Plugin.SmartLolis
         {
             PluginSettings = SmartLolisSettings.Load(this);
             LlmService = new SmartLolisService(PluginSettings);
+            LlmService.SetPersistPath(ExtensionValue.BaseDirectory + $"\\SmartLolisChatHistory{MW.PrefixSave}.json");
             TtsService = new SmartLolisTtsService(PluginSettings);
             SmartLolisLog.Info("SmartLolis plugin loaded.");
 
@@ -46,7 +52,86 @@ namespace VPet.Plugin.SmartLolis
 
         public override void Setting()
         {
-            new SmartLolisSettingsWindow(this).ShowDialog();
+            if (_settingsWindow != null)
+            {
+                try
+                {
+                    if (_settingsWindow.IsVisible)
+                    {
+                        if (_settingsWindow.WindowState == WindowState.Minimized)
+                            _settingsWindow.WindowState = WindowState.Normal;
+                        _settingsWindow.Activate();
+                        return;
+                    }
+                }
+                catch { }
+            }
+            _settingsWindow = new SmartLolisSettingsWindow(this);
+            _settingsWindow.Closed += (_, _) => _settingsWindow = null;
+            _settingsWindow.Show();
+        }
+
+        public void ShowChatHistoryWindow(string uiLanguage)
+        {
+            if (_chatHistoryWindow != null)
+            {
+                try
+                {
+                    if (_chatHistoryWindow.IsVisible)
+                    {
+                        if (_chatHistoryWindow.WindowState == WindowState.Minimized)
+                            _chatHistoryWindow.WindowState = WindowState.Normal;
+                        _chatHistoryWindow.Activate();
+                        return;
+                    }
+                }
+                catch { }
+            }
+            _chatHistoryWindow = new SmartLolisChatHistoryWindow(this, uiLanguage);
+            _chatHistoryWindow.Closed += (_, _) => _chatHistoryWindow = null;
+            _chatHistoryWindow.Show();
+        }
+
+        public void ShowCommandInfoWindow(string uiLanguage)
+        {
+            if (_commandInfoWindow != null)
+            {
+                try
+                {
+                    if (_commandInfoWindow.IsVisible)
+                    {
+                        if (_commandInfoWindow.WindowState == WindowState.Minimized)
+                            _commandInfoWindow.WindowState = WindowState.Normal;
+                        _commandInfoWindow.Activate();
+                        return;
+                    }
+                }
+                catch { }
+            }
+            _commandInfoWindow = new SmartLolisCommandInfoWindow(uiLanguage);
+            _commandInfoWindow.Closed += (_, _) => _commandInfoWindow = null;
+            _commandInfoWindow.Show();
+        }
+
+        public void ShowLogWindow()
+        {
+            if (_logWindow != null)
+            {
+                try
+                {
+                    if (_logWindow.IsVisible)
+                    {
+                        if (_logWindow.WindowState == WindowState.Minimized)
+                            _logWindow.WindowState = WindowState.Normal;
+                        _logWindow.Activate();
+                        return;
+                    }
+                }
+                catch { }
+            }
+            _logWindow = new SmartLolisLogWindow();
+            _logWindow.Closed += (_, _) => _logWindow = null;
+            _logWindow.Show();
         }
 
         public override void Save()
